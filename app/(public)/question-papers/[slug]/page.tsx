@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons'
 import { PdfViewer } from '@/components/ui/PdfViewer'
+import { ViewTracker } from '@/components/ui/ViewTracker'
+import { CommentsSection } from '@/components/ui/CommentsSection'
 import { Download, FileText, Calendar, BookOpen, CheckCircle } from 'lucide-react'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -58,6 +60,7 @@ export default async function QuestionPaperDetailsPage({
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <ViewTracker id={paper.id} type="question_papers" />
       <div className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">
           <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
@@ -97,6 +100,8 @@ export default async function QuestionPaperDetailsPage({
               <PdfViewer url={paper.file_url} title={paper.title} />
             </div>
           )}
+
+          <CommentsSection contentId={paper.id} contentType="question_paper" />
         </div>
 
         <div className="space-y-6">

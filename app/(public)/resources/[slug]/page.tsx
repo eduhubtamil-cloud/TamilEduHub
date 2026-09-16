@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons'
 import { PdfViewer } from '@/components/ui/PdfViewer'
+import { ViewTracker } from '@/components/ui/ViewTracker'
+import { CommentsSection } from '@/components/ui/CommentsSection'
 import { Card, CardContent } from '@/components/ui/card'
 import { Download, FileText, Calendar, LayoutTemplate } from 'lucide-react'
 import { AdSlot } from '@/components/ui/AdSlot'
@@ -62,6 +64,7 @@ export default async function ResourcePage({
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <ViewTracker id={resource.id} type="resources" />
       {/* Breadcrumb */}
       <nav className="text-sm text-slate-500 mb-6">
         <ol className="flex space-x-2">
@@ -93,6 +96,8 @@ export default async function ResourcePage({
               <p>PDF file not available.</p>
             </div>
           )}
+
+          <CommentsSection contentId={resource.id} contentType="resource" />
         </div>
 
         {/* Sidebar Info */}

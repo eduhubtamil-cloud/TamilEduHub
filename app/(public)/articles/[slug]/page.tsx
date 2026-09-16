@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { Calendar, User, ChevronLeft } from 'lucide-react'
 import { AdSlot } from '@/components/ui/AdSlot'
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons'
+import { ViewTracker } from '@/components/ui/ViewTracker'
+import { CommentsSection } from '@/components/ui/CommentsSection'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -55,6 +57,7 @@ export default async function ArticleDetailsPage({
 
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
+      <ViewTracker id={article.id} type="articles" />
       {/* Hero Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -136,6 +139,8 @@ export default async function ArticleDetailsPage({
         <div className="pt-8 border-t border-slate-200">
           <SocialShareButtons title={article.title} description={article.excerpt} />
         </div>
+
+        <CommentsSection contentId={article.id} contentType="article" />
       </div>
 
       {/* Related Articles */}
