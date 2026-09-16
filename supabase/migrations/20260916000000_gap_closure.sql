@@ -84,16 +84,24 @@ ALTER TABLE collections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE search_analytics ENABLE ROW LEVEL SECURITY;
 
 -- Public read access
-DROP POLICY IF EXISTS "Public can view exam_types" ON exam_types;`nCREATE POLICY "Public can view exam_types" ON exam_types FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Public can view publications" ON publications;`nCREATE POLICY "Public can view publications" ON publications FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Public can view collections" ON collections;`nCREATE POLICY "Public can view collections" ON collections FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public can view exam_types" ON exam_types;
+CREATE POLICY "Public can view exam_types" ON exam_types FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public can view publications" ON publications;
+CREATE POLICY "Public can view publications" ON publications FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public can view collections" ON collections;
+CREATE POLICY "Public can view collections" ON collections FOR SELECT USING (true);
 
 -- Analytics insert access
-DROP POLICY IF EXISTS "Public can insert search_analytics" ON search_analytics;`nCREATE POLICY "Public can insert search_analytics" ON search_analytics FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can insert search_analytics" ON search_analytics;
+CREATE POLICY "Public can insert search_analytics" ON search_analytics FOR INSERT WITH CHECK (true);
 
 -- Admin manage access
-DROP POLICY IF EXISTS "Admins manage exam_types" ON exam_types;`nCREATE POLICY "Admins manage exam_types" ON exam_types FOR ALL TO authenticated USING (is_admin(auth.uid()));
-DROP POLICY IF EXISTS "Admins manage publications" ON publications;`nCREATE POLICY "Admins manage publications" ON publications FOR ALL TO authenticated USING (is_admin(auth.uid()));
-DROP POLICY IF EXISTS "Admins manage collections" ON collections;`nCREATE POLICY "Admins manage collections" ON collections FOR ALL TO authenticated USING (is_admin(auth.uid()));
-DROP POLICY IF EXISTS "Admins view search_analytics" ON search_analytics;`nCREATE POLICY "Admins view search_analytics" ON search_analytics FOR SELECT TO authenticated USING (is_admin(auth.uid()));
+DROP POLICY IF EXISTS "Admins manage exam_types" ON exam_types;
+CREATE POLICY "Admins manage exam_types" ON exam_types FOR ALL TO authenticated USING (is_admin(auth.uid()));
+DROP POLICY IF EXISTS "Admins manage publications" ON publications;
+CREATE POLICY "Admins manage publications" ON publications FOR ALL TO authenticated USING (is_admin(auth.uid()));
+DROP POLICY IF EXISTS "Admins manage collections" ON collections;
+CREATE POLICY "Admins manage collections" ON collections FOR ALL TO authenticated USING (is_admin(auth.uid()));
+DROP POLICY IF EXISTS "Admins view search_analytics" ON search_analytics;
+CREATE POLICY "Admins view search_analytics" ON search_analytics FOR SELECT TO authenticated USING (is_admin(auth.uid()));
 

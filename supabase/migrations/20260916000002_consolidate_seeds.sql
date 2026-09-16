@@ -58,11 +58,18 @@ ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE community_links ENABLE ROW LEVEL SECURITY;
 ALTER TABLE community_clicks_analytics ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Public can view approved comments" ON comments;`nCREATE POLICY "Public can view approved comments" ON comments FOR SELECT USING (is_approved = true OR auth.uid() = user_id);
-DROP POLICY IF EXISTS "Users can insert comments" ON comments;`nCREATE POLICY "Users can insert comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Users can update own comments" ON comments;`nCREATE POLICY "Users can update own comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
-DROP POLICY IF EXISTS "Users can delete own comments" ON comments;`nCREATE POLICY "Users can delete own comments" ON comments FOR DELETE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Public can view approved comments" ON comments;
+CREATE POLICY "Public can view approved comments" ON comments FOR SELECT USING (is_approved = true OR auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can insert comments" ON comments;
+CREATE POLICY "Users can insert comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can update own comments" ON comments;
+CREATE POLICY "Users can update own comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can delete own comments" ON comments;
+CREATE POLICY "Users can delete own comments" ON comments FOR DELETE USING (auth.uid() = user_id);
 
-DROP POLICY IF EXISTS "Public can view enabled community links" ON community_links;`nCREATE POLICY "Public can view enabled community links" ON community_links FOR SELECT USING (is_enabled = true);
-DROP POLICY IF EXISTS "Anyone can insert community clicks" ON community_clicks_analytics;`nCREATE POLICY "Anyone can insert community clicks" ON community_clicks_analytics FOR INSERT WITH CHECK (true);
-DROP POLICY IF EXISTS "Admins view clicks" ON community_clicks_analytics;`nCREATE POLICY "Admins view clicks" ON community_clicks_analytics FOR SELECT TO authenticated USING (is_admin(auth.uid()));
+DROP POLICY IF EXISTS "Public can view enabled community links" ON community_links;
+CREATE POLICY "Public can view enabled community links" ON community_links FOR SELECT USING (is_enabled = true);
+DROP POLICY IF EXISTS "Anyone can insert community clicks" ON community_clicks_analytics;
+CREATE POLICY "Anyone can insert community clicks" ON community_clicks_analytics FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Admins view clicks" ON community_clicks_analytics;
+CREATE POLICY "Admins view clicks" ON community_clicks_analytics FOR SELECT TO authenticated USING (is_admin(auth.uid()));
