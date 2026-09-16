@@ -69,12 +69,12 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE POLICY "Admins can manage community links" 
-ON community_links FOR ALL TO authenticated 
+DROP POLICY IF EXISTS "Admins can manage community links" ON community_links;
+CREATE POLICY "Admins can manage community links" ON community_links FOR ALL TO authenticated 
 USING (is_admin(auth.uid()));
 
-CREATE POLICY "Admins can manage comments" 
-ON comments FOR ALL TO authenticated 
+DROP POLICY IF EXISTS "Admins can manage comments" ON comments;
+CREATE POLICY "Admins can manage comments" ON comments FOR ALL TO authenticated 
 USING (is_admin(auth.uid()));
 
 -- Enable RLS on new tables
