@@ -10,7 +10,7 @@ export async function CommunityLinksWrapper({ location, compact = false }: Commu
   const supabase = await createClient()
   
   const { data } = await (supabase.from('community_links') as any)
-    .select('id, platform, url, label, description')
+    .select('id, platform, url, label, description, qr_code_url')
     .eq('is_enabled', true)
     .order('display_order', { ascending: true })
 

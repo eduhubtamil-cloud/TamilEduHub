@@ -44,6 +44,11 @@ export default async function CommunityLinksSettingsPage() {
                     <Label>Description (Subtitle)</Label>
                     <Input name="description" defaultValue={link.description} placeholder="Optional short description..." />
                   </div>
+                  
+                  <div className="space-y-2 md:col-span-2">
+                    <Label>QR Code Image URL</Label>
+                    <Input name="qr_code_url" defaultValue={link.qr_code_url} placeholder="Optional URL to a QR code image..." />
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t border-slate-100">

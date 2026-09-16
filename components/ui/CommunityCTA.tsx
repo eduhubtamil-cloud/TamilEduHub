@@ -8,6 +8,7 @@ interface CommunityLink {
   url: string
   label: string
   description?: string
+  qr_code_url?: string
 }
 
 interface CommunityCTAProps {
@@ -67,23 +68,30 @@ export function CommunityCTA({ links, location, compact = false }: CommunityCTAP
         Stay updated with new resources, study materials, and educational announcements. Join thousands of students today.
       </p>
       
-      <div className="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-6">
         {links.map((link) => (
-          <button
-            key={link.id}
-            onClick={() => handleTrackClick(link.id, link.platform, link.url)}
-            className={`flex flex-col items-center justify-center py-4 px-8 rounded-xl transition-transform hover:-translate-y-1 shadow-md ${getColors(link.platform)}`}
-          >
-            <div className="flex items-center gap-3 font-bold text-lg mb-1">
-              {getIcon(link.platform, "h-6 w-6")}
-              {link.label}
-            </div>
-            {link.description && (
-              <span className="text-sm opacity-90 max-w-[200px] text-center">
-                {link.description}
-              </span>
+          <div key={link.id} className="flex flex-col items-center">
+            <button
+              onClick={() => handleTrackClick(link.id, link.platform, link.url)}
+              className={`flex flex-col items-center justify-center py-4 px-8 rounded-xl transition-transform hover:-translate-y-1 shadow-md w-full sm:w-auto ${getColors(link.platform)}`}
+            >
+              <div className="flex items-center gap-3 font-bold text-lg mb-1">
+                {getIcon(link.platform, "h-6 w-6")}
+                {link.label}
+              </div>
+              {link.description && (
+                <span className="text-sm opacity-90 max-w-[200px] text-center">
+                  {link.description}
+                </span>
+              )}
+            </button>
+            
+            {link.qr_code_url && (
+              <div className="mt-4 p-2 bg-white rounded-lg border border-slate-200 shadow-sm hidden md:block">
+                <img src={link.qr_code_url} alt={`${link.label} QR Code`} className="w-24 h-24 object-contain" />
+              </div>
             )}
-          </button>
+          </div>
         ))}
       </div>
     </div>

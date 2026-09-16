@@ -9,6 +9,7 @@ export async function updateCommunityLink(formData: FormData) {
   const url = formData.get('url') as string
   const label = formData.get('label') as string
   const description = formData.get('description') as string
+  const qr_code_url = formData.get('qr_code_url') as string
   const is_enabled = formData.get('is_enabled') === 'on'
   const display_order = parseInt(formData.get('display_order') as string) || 0
 
@@ -17,6 +18,7 @@ export async function updateCommunityLink(formData: FormData) {
       url, 
       label, 
       description, 
+      qr_code_url,
       is_enabled, 
       display_order,
       updated_at: new Date().toISOString()

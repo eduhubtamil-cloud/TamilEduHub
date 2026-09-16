@@ -13,16 +13,17 @@ export const metadata = {
 export default async function ResourcesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ standard?: string; subject?: string; medium?: string; type?: string }>
+  searchParams: Promise<{ standard?: string; subject?: string; medium?: string; type?: string; exam?: string }>
 }) {
   const supabase = await createClient()
-  const { standard, subject, medium, type } = await searchParams;
+  const { standard, subject, medium, type, exam } = await searchParams;
 
   // Fetch filters data
   const { data: standards } = await supabase.from('standards').select('id, name').order('display_order')
   const { data: subjects } = await supabase.from('subjects').select('id, name').order('display_order')
   const { data: mediums } = await supabase.from('mediums').select('id, name').order('display_order')
   const { data: resourceTypes } = await supabase.from('resource_types').select('id, name').order('display_order')
+  const { data: examTypes } = await (supabase.from('exam_types') as any).select('id, name').order('name')
 
   // Build query for resources
   let query = supabase
@@ -32,22 +33,26 @@ export default async function ResourcesPage({
       resource_types(name),
       mediums(name),
       standards(name),
-      subjects(name)
+      subjects(name),
+      exam_types(name)
     `)
-    .eq('status', 'published')
-    .order('created_at', { ascending: false })
 
   if (standard) query = query.eq('standard_id', standard)
   if (subject) query = query.eq('subject_id', subject)
   if (medium) query = query.eq('medium_id', medium)
   if (type) query = query.eq('resource_type_id', type)
+  if (exam) query = (query as any).eq('exam_type_id', exam)
 
   const { data: resources } = await query
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(100)
 
   const displayStandards = (standards || []) as any[]
   const displaySubjects = (subjects || []) as any[]
   const displayMediums = (mediums || []) as any[]
   const displayTypes = (resourceTypes || []) as any[]
+  const displayExams = (examTypes || []) as any[]
   const displayResources = (resources || []) as any[]
 
   return (
@@ -97,7 +102,16 @@ export default async function ResourcesPage({
                   ))}
                 </select>
               </div>
-              <Button type="submit" className="w-full mt-4">Apply Filters</Button>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Exam Type</label>
+                <select name="exam" defaultValue={exam} className="w-full rounded-md border border-slate-300 p-2 text-sm bg-white">
+                  <option value="">All Exams</option>
+                  {displayExams.map((ex: any) => (
+                    <option key={ex.id} value={ex.id}>{ex.name}</option>
+                  ))}
+                </select>
+              </div>
+              <Button type="submit" className="w-full">Apply Filters</Button>
             </div>
           </form>
         </aside>
