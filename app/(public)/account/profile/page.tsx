@@ -1,9 +1,12 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { signout } from '@/app/auth/actions'
+import { updateProfile, updatePassword } from './actions'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { User } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+import { User, LogOut, Camera, KeyRound } from 'lucide-react'
 
 export const metadata = {
   title: 'My Profile - TamilEduHub',
@@ -18,52 +21,128 @@ export default async function ProfilePage() {
   }
 
   // Fetch profile data
-  const { data: rawProfile } = await supabase
+  const { data } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single()
     
-  const profile = rawProfile as any;
+  const profile = data as any
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
+    <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900">Account Settings</h1>
+        <p className="text-slate-500">Manage your profile, avatar, and security preferences.</p>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-8">
         
         {/* Sidebar */}
-        <aside className="w-full md:w-64 flex-shrink-0 space-y-2">
-          <Button variant="secondary" className="w-full justify-start gap-2">
-            <User className="h-4 w-4" /> Profile
-          </Button>
-          <Button variant="ghost" className="w-full justify-start gap-2 text-slate-500">
-             Bookmarks
-          </Button>
-          <form action={signout} className="pt-4">
-            <Button variant="destructive" className="w-full" type="submit">
-              Log out
+        <aside className="w-full md:w-64 shrink-0 space-y-4">
+          <Card className="bg-slate-50 border-slate-200">
+            <CardContent className="p-6 text-center">
+              <div className="mx-auto h-24 w-24 rounded-full bg-slate-200 mb-4 overflow-hidden border-4 border-white shadow-sm flex items-center justify-center">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
+                ) : (
+                  <User className="h-10 w-10 text-slate-400" />
+                )}
+              </div>
+              <h3 className="font-semibold text-slate-900">{profile?.full_name || 'Student'}</h3>
+              <p className="text-sm text-slate-500 truncate" title={user.email}>{user.email}</p>
+            </CardContent>
+          </Card>
+
+          <form action={signout}>
+            <Button variant="outline" className="w-full text-slate-700 hover:text-red-600 hover:bg-red-50 hover:border-red-200 gap-2" type="submit">
+              <LogOut className="h-4 w-4" /> Log out
             </Button>
           </form>
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1 space-y-6">
+        <div className="flex-1 space-y-8">
+          
+          {/* Profile Form */}
           <Card>
-            <CardHeader>
-              <CardTitle>Account Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <span className="text-sm font-medium text-slate-500 block">Email Address</span>
-                <span className="text-base text-slate-900">{user.email}</span>
-              </div>
-              <div>
-                <span className="text-sm font-medium text-slate-500 block">Full Name</span>
-                <span className="text-base text-slate-900">{profile?.full_name || 'Not provided'}</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            <form action={updateProfile as any}>
+              <CardHeader>
+                <CardTitle>Public Profile</CardTitle>
+                <CardDescription>This information will be displayed on your bookmarks and comments.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="space-y-2">
+                  <Label htmlFor="full_name">Display Name</Label>
+                  <Input 
+                    id="full_name" 
+                    name="full_name" 
+                    defaultValue={profile?.full_name || ''} 
+                    placeholder="Enter your full name" 
+                    className="max-w-md"
+                  />
+                </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="avatar">Profile Picture</Label>
+                  <div className="flex items-center gap-4">
+                    <label htmlFor="avatar" className="cursor-pointer flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50">
+                      <Camera className="h-4 w-4 text-slate-500" />
+                      Choose new image...
+                      <input id="avatar" name="avatar" type="file" accept="image/*" className="sr-only" />
+                    </label>
+                    <span className="text-xs text-slate-500">JPG, GIF or PNG. Max size 2MB.</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-4">
+                  <Label>Email Address</Label>
+                  <Input 
+                    value={user.email} 
+                    disabled 
+                    className="max-w-md bg-slate-50 text-slate-500 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-slate-500">To change your email address, please contact support.</p>
+                </div>
+              </CardContent>
+              <CardFooter className="bg-slate-50 border-t border-slate-100 py-4">
+                <Button type="submit">Save Changes</Button>
+              </CardFooter>
+            </form>
+          </Card>
+
+          {/* Security Form */}
+          <Card>
+            <form action={updatePassword as any}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <KeyRound className="h-5 w-5 text-slate-400" /> Security
+                </CardTitle>
+                <CardDescription>Ensure your account is using a long, random password to stay secure.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new_password">New Password</Label>
+                  <Input 
+                    id="new_password" 
+                    name="new_password" 
+                    type="password" 
+                    placeholder="••••••••" 
+                    className="max-w-md"
+                    required
+                    minLength={6}
+                  />
+                  <p className="text-xs text-slate-500">Must be at least 6 characters long.</p>
+                </div>
+              </CardContent>
+              <CardFooter className="bg-slate-50 border-t border-slate-100 py-4">
+                <Button variant="outline" type="submit">Update Password</Button>
+              </CardFooter>
+            </form>
+          </Card>
+
+        </div>
       </div>
     </div>
   )

@@ -1,31 +1,35 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Bookmark } from 'lucide-react'
+import { toggleBookmarkAction, checkBookmarkStatus } from '@/app/(public)/account/bookmarks/actions'
 
 export function BookmarkButton({ 
   contentId, 
   contentType, 
-  initialIsBookmarked = false 
 }: { 
   contentId: string
   contentType: 'article' | 'resource' | 'question_paper'
-  initialIsBookmarked?: boolean
 }) {
-  const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isBookmarked, setIsBookmarked] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const toggleBookmark = async () => {
+  useEffect(() => {
+    checkBookmarkStatus(contentId).then((status) => {
+      setIsBookmarked(status)
+      setIsLoading(false)
+    })
+  }, [contentId])
+
+  const handleToggle = async () => {
     setIsLoading(true)
     try {
-      // In a real app, this would call our API route
-      // const res = await fetch('/api/bookmarks', { method: isBookmarked ? 'DELETE' : 'POST', body: JSON.stringify({ contentId, contentType }) })
-      // if (res.ok) setIsBookmarked(!isBookmarked)
-      
-      // Simulate network request for MVP
-      await new Promise(r => setTimeout(r, 500))
-      setIsBookmarked(!isBookmarked)
+      const result = await toggleBookmarkAction(contentId, contentType)
+      setIsBookmarked(result.bookmarked)
+    } catch (error) {
+      console.error(error)
+      alert("Please log in to bookmark this.")
     } finally {
       setIsLoading(false)
     }
@@ -35,7 +39,7 @@ export function BookmarkButton({
     <Button 
       variant="outline" 
       size="icon" 
-      onClick={toggleBookmark}
+      onClick={handleToggle}
       disabled={isLoading}
       title={isBookmarked ? "Remove Bookmark" : "Add Bookmark"}
     >

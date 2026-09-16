@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { createResource } from '@/app/admin/resources/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,7 +11,19 @@ export const metadata = {
   title: 'Create Resource - TamilEduHub CMS',
 }
 
-export default function CreateResourcePage() {
+export default async function CreateResourcePage() {
+  const supabase = await createClient()
+
+  // Fetch data for dropdowns
+  const { data: standards } = await supabase.from('standards').select('id, name').order('display_order')
+  const { data: subjects } = await supabase.from('subjects').select('id, name').order('display_order')
+  const { data: mediums } = await supabase.from('mediums').select('id, name')
+  const { data: resourceTypes } = await supabase.from('resource_types').select('id, name')
+  const displayStandards = (standards || []) as any[]
+  const displaySubjects = (subjects || []) as any[]
+  const displayMediums = (mediums || []) as any[]
+  const displayResourceTypes = (resourceTypes || []) as any[]
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="mb-6 flex items-center gap-4">
@@ -24,7 +38,7 @@ export default function CreateResourcePage() {
         </div>
       </div>
 
-      <form action="/api/admin/resources" method="POST">
+      <form action={createResource}>
         <div className="grid gap-6">
           <Card>
             <CardHeader>
@@ -56,33 +70,36 @@ export default function CreateResourcePage() {
                 <Label htmlFor="standard_id">Standard *</Label>
                 <select id="standard_id" name="standard_id" className="w-full h-10 rounded-md border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" required>
                   <option value="">Select Standard</option>
-                  <option value="1">10th Standard</option>
-                  <option value="2">12th Standard</option>
+                  {displayStandards.map(std => (
+                    <option key={std.id} value={std.id}>{std.name}</option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject_id">Subject *</Label>
                 <select id="subject_id" name="subject_id" className="w-full h-10 rounded-md border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" required>
                   <option value="">Select Subject</option>
-                  <option value="1">Tamil</option>
-                  <option value="2">English</option>
-                  <option value="3">Mathematics</option>
+                  {displaySubjects.map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="medium_id">Medium</Label>
                 <select id="medium_id" name="medium_id" className="w-full h-10 rounded-md border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
                   <option value="">Select Medium</option>
-                  <option value="1">Tamil Medium</option>
-                  <option value="2">English Medium</option>
+                  {displayMediums.map(med => (
+                    <option key={med.id} value={med.id}>{med.name}</option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="resource_type_id">Resource Type</Label>
                 <select id="resource_type_id" name="resource_type_id" className="w-full h-10 rounded-md border border-slate-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
                   <option value="">Select Type</option>
-                  <option value="1">Study Guide</option>
-                  <option value="2">Question Paper</option>
+                  {displayResourceTypes.map(type => (
+                    <option key={type.id} value={type.id}>{type.name}</option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-2">
@@ -98,13 +115,9 @@ export default function CreateResourcePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="file">PDF File *</Label>
+                <Label htmlFor="file">PDF File (Optional for now)</Label>
                 <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center hover:bg-slate-50 transition-colors">
-                  <Input id="file" name="file" type="file" accept=".pdf" className="hidden" />
-                  <Label htmlFor="file" className="cursor-pointer flex flex-col items-center">
-                    <span className="bg-slate-100 text-slate-700 p-3 rounded-full mb-2">Upload PDF</span>
-                    <span className="text-sm text-slate-500">Drag and drop or click to browse</span>
-                  </Label>
+                  <Input id="file" name="file" type="file" accept=".pdf" className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                 </div>
               </div>
             </CardContent>
