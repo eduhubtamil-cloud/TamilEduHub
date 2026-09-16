@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, Plus, Filter, Edit, Trash2, Eye } from 'lucide-react'
+import { Search, Plus, Filter, Edit, Trash2, Eye, Upload } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 
 export const metadata = {
@@ -45,11 +45,23 @@ export default async function AdminResourcesPage({
           <h1 className="text-2xl font-bold text-slate-900">Manage Resources</h1>
           <p className="text-slate-500">Create, edit, and manage educational resources.</p>
         </div>
-        <Button asChild className="gap-2">
-          <Link href="/admin/resources/create">
-            <Plus className="h-4 w-4" /> Add Resource
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" className="gap-2">
+            <Link href="/admin/resources/bulk-edit">
+              <Edit className="h-4 w-4" /> Bulk Edit
+            </Link>
+          </Button>
+          <Button asChild variant="secondary" className="gap-2">
+            <Link href="/admin/resources/bulk">
+              <Upload className="h-4 w-4" /> Bulk Upload
+            </Link>
+          </Button>
+          <Button asChild className="gap-2">
+            <Link href="/admin/resources/create">
+              <Plus className="h-4 w-4" /> Add Resource
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card className="bg-white shadow-sm border-slate-200">

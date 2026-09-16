@@ -63,18 +63,25 @@ export interface Database {
           title: string
           slug: string
           description: string | null
-          standard_id: string
-          subject_id: string
+          standard_id: string | null
+          subject_id: string | null
           medium_id: string | null
           resource_type_id: string | null
           exam_type_id: string | null
           publication_id: string | null
           tags: string[] | null
           year: number | null
+          thumbnail_url: string | null
           file_url: string | null
           file_size: string | null
           author_id: string | null
           status: string | null
+          is_featured: boolean | null
+          related_resources: string[] | null
+          views_count: number | null
+          seo_title: string | null
+          seo_description: string | null
+          canonical_url: string | null
           published_at: string | null
           created_at: string | null
           updated_at: string | null
