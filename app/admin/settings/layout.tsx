@@ -38,6 +38,10 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
               <Settings className="h-4 w-4 text-slate-500" />
               Advertisements
             </Link>
+            <Link href="/admin/settings/community-links" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-50 text-slate-900">
+              <Settings className="h-4 w-4 text-slate-500" />
+              Community Links
+            </Link>
           </nav>
         </aside>
 

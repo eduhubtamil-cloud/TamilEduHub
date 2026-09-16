@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
 
 export function Footer() {
   return (
@@ -28,6 +29,10 @@ export function Footer() {
               <li><Link href="/disclaimer" className="hover:text-blue-600">Disclaimer</Link></li>
               <li><Link href="/contact" className="hover:text-blue-600">Contact Us</Link></li>
             </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-slate-900 mb-4">Connect</h4>
+            <CommunityLinksWrapper location="footer" compact={true} />
           </div>
         </div>
         <div className="mt-12 border-t border-slate-200 pt-8 text-center text-sm text-slate-500">

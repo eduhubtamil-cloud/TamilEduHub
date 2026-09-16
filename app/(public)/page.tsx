@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Search, ArrowRight, BookOpen, Newspaper } from 'lucide-react'
 import { AdSlot } from '@/components/ui/AdSlot'
+import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
 
 export const metadata = {
   title: 'TamilEduHub - Modern Tamil Educational Resources',
@@ -190,6 +191,13 @@ export default async function HomePage() {
               ))
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Community CTA Section */}
+      <section className="py-16 px-4 bg-slate-50">
+        <div className="container mx-auto max-w-5xl">
+          <CommunityLinksWrapper location="homepage_cta" />
         </div>
       </section>
     </>
