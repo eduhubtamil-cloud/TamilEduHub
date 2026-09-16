@@ -54,15 +54,13 @@ export default async function StandardDetailsPage({ params }: { params: Promise<
       {/* Subjects Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {displaySubjects.map(subject => (
-          <Link href={`/resources?standard=${standard.id}&subject=${subject.id}`} key={subject.id}>
+          <Link href={`/school/${standard.slug}/${subject.slug}`} key={subject.id}>
             <Card className="hover:border-blue-400 hover:shadow-md transition-all h-full group cursor-pointer bg-white">
               <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
-                  <FileText className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+                <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <BookOpen className="h-6 w-6" />
                 </div>
-                <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                  {subject.name}
-                </h3>
+                <h3 className="font-semibold text-slate-900">{subject.name}</h3>
               </CardContent>
             </Card>
           </Link>

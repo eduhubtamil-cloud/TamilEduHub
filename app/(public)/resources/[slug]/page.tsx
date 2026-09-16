@@ -3,8 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
+import { SocialShareButtons } from '@/components/ui/SocialShareButtons'
+import { PdfViewer } from '@/components/ui/PdfViewer'
 import { Card, CardContent } from '@/components/ui/card'
-import { Download, Share2, FileText, Calendar, LayoutTemplate } from 'lucide-react'
+import { Download, FileText, Calendar, LayoutTemplate } from 'lucide-react'
+import { AdSlot } from '@/components/ui/AdSlot'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -77,41 +80,19 @@ export default async function ResourcePage({
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{resource.title}</h1>
             <div className="flex gap-2 shrink-0">
               <BookmarkButton contentId={resource.id} contentType="resource" />
-              <Button variant="outline" size="icon">
-                <Share2 className="h-4 w-4" />
-              </Button>
             </div>
           </div>
           
           <p className="text-slate-600 text-lg whitespace-pre-wrap">{resource.description}</p>
 
-          <div className="aspect-[1/1.4] md:aspect-[16/9] w-full bg-slate-100 rounded-lg border border-slate-200 overflow-hidden relative flex flex-col">
-            <div className="bg-slate-800 text-white p-3 flex justify-between items-center text-sm">
-              <span className="truncate">{resource.title}.pdf</span>
-              {resource.file_url && (
-                <Button size="sm" variant="secondary" className="h-8" asChild>
-                  <a href={`/api/download?resource_id=${resource.id}`} target="_blank" rel="noopener noreferrer">
-                    <Download className="h-4 w-4 mr-2" /> Download
-                  </a>
-                </Button>
-              )}
+          {resource.file_url ? (
+            <PdfViewer url={resource.file_url} title={resource.title} />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64 bg-slate-50 text-slate-500 rounded-lg border border-dashed border-slate-200">
+              <FileText className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+              <p>PDF file not available.</p>
             </div>
-            {/* Live PDF Viewer */}
-            <div className="flex-1 w-full h-full bg-slate-50">
-              {resource.file_url ? (
-                <iframe 
-                  src={`${resource.file_url}#toolbar=0&view=FitH`}
-                  className="w-full h-full border-0"
-                  title={resource.title}
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-slate-500">
-                  <FileText className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-                  <p>PDF file not available.</p>
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Sidebar Info */}
@@ -157,6 +138,10 @@ export default async function ResourcePage({
                   <span className="text-slate-500 flex items-center gap-2"><FileText className="h-4 w-4"/> Size</span>
                   <span className="font-medium text-slate-900">{fileSizeStr}</span>
                 </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100">
+                <SocialShareButtons title={resource.title} description={resource.description} />
               </div>
             </CardContent>
           </Card>

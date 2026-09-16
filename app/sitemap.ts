@@ -18,11 +18,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [
     { data: resources },
     { data: qps },
-    { data: articles }
+    { data: articles },
+    { data: standards },
+    { data: subjects }
   ] = await Promise.all([
     supabase.from('resources').select('slug, updated_at').eq('status', 'published'),
     supabase.from('question_papers').select('slug, updated_at').eq('status', 'published'),
     supabase.from('articles').select('slug, updated_at').eq('status', 'published'),
+    supabase.from('standards').select('slug'),
+    supabase.from('subjects').select('slug')
   ])
 
   // Append dynamic routes
@@ -55,6 +59,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(article.updated_at || new Date()),
         changeFrequency: 'monthly',
         priority: 0.6,
+      })
+    })
+  }
+
+  if (standards && subjects) {
+    standards.forEach((std: any) => {
+      routes.push({
+        url: `${baseUrl}/school/${std.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      })
+      subjects.forEach((sub: any) => {
+        routes.push({
+          url: `${baseUrl}/school/${std.slug}/${sub.slug}`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        })
       })
     })
   }

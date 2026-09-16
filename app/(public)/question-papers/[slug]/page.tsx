@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { SocialShareButtons } from '@/components/ui/SocialShareButtons'
+import { PdfViewer } from '@/components/ui/PdfViewer'
 import { Download, FileText, Calendar, BookOpen, CheckCircle } from 'lucide-react'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -89,6 +91,12 @@ export default async function QuestionPaperDetailsPage({
               </div>
             </CardContent>
           </Card>
+
+          {paper.file_url && (
+            <div className="mt-8">
+              <PdfViewer url={paper.file_url} title={paper.title} />
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">
@@ -143,6 +151,10 @@ export default async function QuestionPaperDetailsPage({
                 </a>
               </Button>
             )}
+
+            <div className="pt-4 mt-4 border-t border-slate-100">
+              <SocialShareButtons title={paper.title} description={paper.description} />
+            </div>
           </div>
         </div>
       </div>

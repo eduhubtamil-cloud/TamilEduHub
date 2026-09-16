@@ -26,6 +26,14 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
               <Tags className="h-4 w-4 text-slate-500" />
               Blog Categories
             </Link>
+            <Link href="/admin/settings/mediums" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-50 text-slate-900">
+              <Book className="h-4 w-4 text-slate-500" />
+              Mediums
+            </Link>
+            <Link href="/admin/settings/resource-types" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-50 text-slate-900">
+              <Layers className="h-4 w-4 text-slate-500" />
+              Resource Types
+            </Link>
             <Link href="/admin/settings/ads" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-50 text-slate-900 mt-4 border-t border-slate-200 pt-4">
               <Settings className="h-4 w-4 text-slate-500" />
               Advertisements

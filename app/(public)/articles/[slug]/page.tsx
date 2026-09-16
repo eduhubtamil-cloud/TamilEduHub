@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, User, ChevronLeft } from 'lucide-react'
 import { AdSlot } from '@/components/ui/AdSlot'
+import { SocialShareButtons } from '@/components/ui/SocialShareButtons'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -124,13 +125,17 @@ export default async function ArticleDetailsPage({
       <div className={`container mx-auto px-4 max-w-3xl ${article.featured_image ? 'pt-16' : 'pt-12'}`}>
         <AdSlot location="article_top" className="mb-8" />
         
-        <article className="prose prose-slate prose-lg md:prose-xl max-w-none">
+        <article className="prose prose-slate prose-lg md:prose-xl max-w-none mb-12">
           {/* For MVP, we use dangerouslySetInnerHTML to render basic HTML or just preserve line breaks */}
           <div 
             className="whitespace-pre-wrap"
             dangerouslySetInnerHTML={{ __html: article.content }} 
           />
         </article>
+
+        <div className="pt-8 border-t border-slate-200">
+          <SocialShareButtons title={article.title} description={article.excerpt} />
+        </div>
       </div>
 
       {/* Related Articles */}
