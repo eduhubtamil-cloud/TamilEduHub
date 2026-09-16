@@ -54,9 +54,5 @@ ON comments FOR DELETE
 TO authenticated 
 USING (auth.uid() = user_id);
 
--- Admins can do everything (assuming role_id = 'admin', or fallback to all authenticated for simplicity in testing)
-CREATE POLICY "Admins have full access to comments" 
-ON comments FOR ALL 
-TO authenticated 
-USING (EXISTS (SELECT 1 FROM profiles WHERE profiles.id = auth.uid() AND profiles.role_id = 'admin'));
+
 
