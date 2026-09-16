@@ -142,3 +142,62 @@ export async function updateResourceType(formData: FormData) {
 export async function deleteResourceType(formData: FormData) {
   return deleteRecord('resource_types', formData.get('id') as string, '/admin/settings/resource-types')
 }
+export async function createExamType(formData: FormData) {
+  const supabase = await createClient()
+  const name = formData.get('name') as string
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+
+  const { error } = await (supabase.from('exam_types') as any).insert([{ name, slug }])
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/settings/exam-types')
+}
+
+export async function deleteExamType(formData: FormData) {
+  const supabase = await createClient()
+  const id = formData.get('id') as string
+  const { error } = await (supabase.from('exam_types') as any).delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/settings/exam-types')
+}
+
+export async function createPublication(formData: FormData) {
+  const supabase = await createClient()
+  const name = formData.get('name') as string
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+
+  const { error } = await (supabase.from('publications') as any).insert([{ name, slug }])
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/settings/publications')
+}
+
+export async function deletePublication(formData: FormData) {
+  const supabase = await createClient()
+  const id = formData.get('id') as string
+  const { error } = await (supabase.from('publications') as any).delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/settings/publications')
+}
+
+export async function createCollection(formData: FormData) {
+  const supabase = await createClient()
+  const title = formData.get('title') as string
+  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+  const description = formData.get('description') as string
+  const is_featured = formData.get('is_featured') === 'on'
+  const display_order = parseInt(formData.get('display_order') as string) || 0
+  const query_rules = JSON.parse((formData.get('query_rules') as string) || '{}')
+
+  const { error } = await (supabase.from('collections') as any).insert([{ 
+    title, slug, description, is_featured, display_order, query_rules 
+  }])
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/settings/collections')
+}
+
+export async function deleteCollection(formData: FormData) {
+  const supabase = await createClient()
+  const id = formData.get('id') as string
+  const { error } = await (supabase.from('collections') as any).delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/settings/collections')
+}

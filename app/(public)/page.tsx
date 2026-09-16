@@ -15,27 +15,50 @@ export default async function HomePage() {
   const supabase = await createClient()
 
   // Fetch real data
-  const [
-    { data: standards },
-    { data: recentResources },
-    { data: recentArticles }
-  ] = await Promise.all([
-    supabase.from('standards').select('name, slug').order('display_order').limit(6),
-    supabase.from('resources')
-      .select('title, slug, description, year, standards(name), subjects(name)')
-      .eq('status', 'published')
-      .order('published_at', { ascending: false })
-      .limit(3),
-    supabase.from('articles')
-      .select('title, slug, excerpt, published_at')
-      .eq('status', 'published')
-      .order('published_at', { ascending: false })
-      .limit(3)
-  ])
+  const { data: standards } = await supabase
+    .from('standards')
+    .select('name, slug')
+    .order('display_order')
+    .limit(6)
+
+  const { data: latestResources } = await supabase
+    .from('resources')
+    .select(`
+      id, title, slug, description, year,
+      standards (name, slug),
+      subjects (name, slug),
+      resource_types (name, slug)
+    `)
+    .order('created_at', { ascending: false })
+    .limit(6)
+
+  const { data: popularResources } = await (supabase.from('resources') as any)
+    .select(`
+      id, title, slug, description, year, views_count,
+      standards (name, slug),
+      subjects (name, slug)
+    `)
+    .order('views_count', { ascending: false, nullsFirst: false })
+    .limit(6)
+
+  const { data: collections } = await (supabase.from('collections') as any)
+    .select('id, title, slug, description')
+    .eq('is_featured', true)
+    .order('display_order', { ascending: true })
+    .limit(6)
+
+  const { data: latestArticles } = await supabase
+    .from('articles')
+    .select('id, title, slug, excerpt, published_at')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .limit(3)
 
   const displayStandards = (standards || []) as any[]
-  const displayResources = (recentResources || []) as any[]
-  const displayArticles = (recentArticles || []) as any[]
+  const displayResources = latestResources || []
+  const displayPopular = popularResources || []
+  const displayCollections = collections || []
+  const displayArticles = (latestArticles || []) as any[]
 
   return (
     <>
@@ -109,8 +132,72 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Resources */}
+      {/* Featured Collections */}
+      {displayCollections.length > 0 && (
+        <section className="py-16 px-4 border-t border-slate-200">
+          <div className="container mx-auto max-w-6xl">
+            <h2 className="text-3xl font-bold text-slate-900 mb-8">Study Collections</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayCollections.map((col: any) => (
+                <Link key={col.id} href={`/collections/${col.slug}`} className="block group">
+                  <Card className="h-full hover:border-blue-300 hover:shadow-md transition-all bg-gradient-to-br from-white to-slate-50">
+                    <CardHeader>
+                      <CardTitle className="text-xl text-blue-700 group-hover:text-blue-800">{col.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600 line-clamp-2">{col.description}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Popular Resources */}
       <section className="py-16 px-4 bg-slate-50 border-t border-slate-200">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex justify-between items-end mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+              <BookOpen className="h-7 w-7 text-amber-500" />
+              Most Popular Resources
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {displayPopular.length === 0 ? (
+              <p className="text-slate-500 md:col-span-3">No popular resources yet.</p>
+            ) : (
+              displayPopular.map((res: any) => (
+                <Card key={`pop-${res.id}`} className="hover:shadow-md transition-shadow flex flex-col">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 mb-3">
+                        {res.standards?.name}
+                      </span>
+                      <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full">{res.views_count || 0} views</span>
+                    </div>
+                    <CardTitle className="line-clamp-2 text-lg">
+                      <Link href={`/resources/${res.slug}`} className="hover:text-blue-600 before:absolute before:inset-0">
+                        {res.title}
+                      </Link>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <p className="text-sm text-slate-500 line-clamp-2 flex-1">
+                      {res.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Resources */}
+      <section className="py-16 px-4 border-t border-slate-200">
         <div className="container mx-auto max-w-6xl">
           <div className="flex justify-between items-end mb-8">
             <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">

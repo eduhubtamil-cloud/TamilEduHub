@@ -53,6 +53,10 @@ export interface Database {
       subjects: { Row: { id: string, name: string, slug: string }, Insert: any, Update: any }
       mediums: { Row: { id: string, name: string, slug: string }, Insert: any, Update: any }
       resource_types: { Row: { id: string, name: string, slug: string }, Insert: any, Update: any }
+      exam_types: { Row: { id: string, name: string, slug: string }, Insert: any, Update: any }
+      publications: { Row: { id: string, name: string, slug: string }, Insert: any, Update: any }
+      collections: { Row: { id: string, title: string, slug: string, query_rules: any }, Insert: any, Update: any }
+      search_analytics: { Row: { id: string, query_string: string, result_count: number }, Insert: any, Update: any }
       resources: {
         Row: {
           id: string
@@ -63,6 +67,9 @@ export interface Database {
           subject_id: string
           medium_id: string | null
           resource_type_id: string | null
+          exam_type_id: string | null
+          publication_id: string | null
+          tags: string[] | null
           year: number | null
           file_url: string | null
           file_size: string | null
