@@ -19,11 +19,32 @@ interface CommunityCTAProps {
 
 export function CommunityCTA({ links, location, compact = false }: CommunityCTAProps) {
   const handleTrackClick = (linkId: string, platform: string, url: string) => {
+    let utmSource, utmMedium, utmCampaign, deviceCategory;
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      utmSource = urlParams.get('utm_source') || null;
+      utmMedium = urlParams.get('utm_medium') || null;
+      utmCampaign = urlParams.get('utm_campaign') || null;
+      
+      const ua = navigator.userAgent;
+      if (/mobile/i.test(ua)) deviceCategory = 'mobile';
+      else if (/tablet/i.test(ua)) deviceCategory = 'tablet';
+      else deviceCategory = 'desktop';
+    } catch (e) {}
+
     // Fire and forget tracking
     fetch('/api/track-community-click', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ link_id: linkId, platform, page_location: location })
+      body: JSON.stringify({ 
+        link_id: linkId, 
+        platform, 
+        page_location: location,
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+        utm_campaign: utmCampaign,
+        device_category: deviceCategory
+      })
     }).catch(err => console.error('Failed to track click', err))
     
     // Open in new tab

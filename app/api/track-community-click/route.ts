@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { link_id, platform, page_location } = await request.json()
+    const { link_id, platform, page_location, utm_source, utm_medium, utm_campaign, device_category } = await request.json()
     
     if (!link_id || !platform || !page_location) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -14,7 +14,11 @@ export async function POST(request: NextRequest) {
     const { error } = await (supabase.from('community_clicks_analytics') as any).insert({
       link_id,
       platform,
-      page_location
+      page_location,
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      device_category
     })
 
     if (error) {

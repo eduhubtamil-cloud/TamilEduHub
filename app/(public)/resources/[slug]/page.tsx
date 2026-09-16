@@ -10,17 +10,22 @@ import { CommentsSection } from '@/components/ui/CommentsSection'
 import { Card, CardContent } from '@/components/ui/card'
 import { Download, FileText, Calendar, LayoutTemplate } from 'lucide-react'
 import { AdSlot } from '@/components/ui/AdSlot'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const supabase = await createClient()
-  const { data } = await supabase.from('resources').select('title, description').eq('slug', slug).single()
+  const { data } = await supabase.from('resources').select('title, description, canonical_url, seo_title, seo_description').eq('slug', slug).single()
   const resource = data as any
   
   if (!resource) return { title: 'Resource Not Found' }
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
   return {
-    title: `${resource.title} - TamilEduHub`,
-    description: resource.description || `Download ${resource.title}`,
+    title: resource.seo_title || `${resource.title} - TamilEduHub`,
+    description: resource.seo_description || resource.description || `Download ${resource.title}`,
+    alternates: {
+      canonical: resource.canonical_url || `${siteUrl}/resources/${slug}`
+    }
   }
 }
 
@@ -62,21 +67,36 @@ export default async function ResourcePage({
 
   const relatedResources = relatedData || []
 
+  // Build Breadcrumbs
+  const breadcrumbItems = [
+    { label: resource.standards?.name || 'Standards', href: `/${resource.standards?.slug || 'standards'}` },
+    { label: resource.subjects?.name || 'Subjects', href: `/${resource.standards?.slug}/${resource.subjects?.slug}` },
+    { label: resource.title }
+  ]
+
+  // JSON-LD for Educational Resource
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalResource',
+    name: resource.title,
+    description: resource.description,
+    educationalAlignment: {
+      '@type': 'AlignmentObject',
+      alignmentType: 'educationalLevel',
+      educationalFramework: 'Tamil Nadu State Board',
+      targetName: resource.standards?.name
+    },
+    educationalUse: resource.resource_types?.name,
+    isAccessibleForFree: true
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <ViewTracker id={resource.id} type="resources" />
-      {/* Breadcrumb */}
-      <nav className="text-sm text-slate-500 mb-6">
-        <ol className="flex space-x-2">
-          <li><Link href="/" className="hover:text-blue-600">Home</Link></li>
-          <li>/</li>
-          <li><Link href="/resources" className="hover:text-blue-600">Study Materials</Link></li>
-          <li>/</li>
-          <li className="text-slate-900 truncate max-w-[200px] sm:max-w-md">{resource.title}</li>
-        </ol>
-      </nav>
+      <Breadcrumbs items={breadcrumbItems} />
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-8 mt-6">
         {/* Main Content (PDF Viewer) */}
         <div className="flex-1 space-y-6">
           <div className="flex justify-between items-start gap-4">

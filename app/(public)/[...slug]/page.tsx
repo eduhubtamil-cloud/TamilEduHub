@@ -1,0 +1,192 @@
+import { createClient } from '@/lib/supabase/server'
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { FileText, Download, Eye, Calendar, BookOpen } from 'lucide-react'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
+
+// Helper to fetch entities by slug
+async function fetchEntityBySlug(table: string, slug: string) {
+  const supabase = await createClient()
+  const { data } = await (supabase.from(table) as any).select('*').eq('slug', slug).single()
+  return data
+}
+
+export async function generateMetadata(props: { params: Promise<{ slug: string[] }> }) {
+  const { slug } = await props.params
+  
+  // Resolve entities
+  let standard = null
+  let subject = null
+  let resourceType = null
+  let examType = null
+  
+  if (slug.length === 1) {
+    standard = await fetchEntityBySlug('standards', slug[0])
+    if (!standard) resourceType = await fetchEntityBySlug('resource_types', slug[0])
+    if (!standard && !resourceType) examType = await fetchEntityBySlug('exam_types', slug[0])
+  } else if (slug.length === 2) {
+    standard = await fetchEntityBySlug('standards', slug[0])
+    subject = await fetchEntityBySlug('subjects', slug[1])
+    if (!subject) resourceType = await fetchEntityBySlug('resource_types', slug[1])
+  }
+
+  if (!standard && !resourceType && !examType) return { title: 'Not Found' }
+
+  let title = 'Study Materials'
+  let description = 'Download educational resources from TamilEduHub.'
+  
+  if (slug.length === 1 && standard) {
+    title = standard.seo_title || `${standard.name} Study Materials & Question Papers`
+    description = standard.seo_description || `Download standard ${standard.name} books, guides, and exam papers.`
+  } else if (slug.length === 1 && resourceType) {
+    title = `${resourceType.name} for All Standards - TamilEduHub`
+    description = `Download ${resourceType.name.toLowerCase()} for Tamil Nadu state board students.`
+  } else if (slug.length === 2 && standard && subject) {
+    title = `${standard.name} ${subject.name} Study Materials`
+    description = `Download ${standard.name} ${subject.name} guides, notes, and question papers.`
+  } else if (slug.length === 2 && standard && resourceType) {
+    title = `${standard.name} ${resourceType.name}`
+    description = `Download ${standard.name} ${resourceType.name.toLowerCase()} for state board.`
+  }
+
+  const path = `/${slug.join('/')}`
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${siteUrl}${path}`,
+    }
+  }
+}
+
+export default async function TaxonomyLandingPage(props: { params: Promise<{ slug: string[] }> }) {
+  const { slug } = await props.params
+  const supabase = await createClient()
+
+  // 1. Resolve what the URL means
+  let standard: any = null
+  let subject: any = null
+  let resourceType: any = null
+  let examType: any = null
+
+  if (slug.length === 1) {
+    standard = await fetchEntityBySlug('standards', slug[0])
+    if (!standard) resourceType = await fetchEntityBySlug('resource_types', slug[0])
+    if (!standard && !resourceType) examType = await fetchEntityBySlug('exam_types', slug[0])
+    
+    if (!standard && !resourceType && !examType) notFound()
+  } else if (slug.length === 2) {
+    standard = await fetchEntityBySlug('standards', slug[0])
+    if (!standard) notFound()
+    
+    subject = await fetchEntityBySlug('subjects', slug[1])
+    if (!subject) resourceType = await fetchEntityBySlug('resource_types', slug[1])
+    if (!subject && !resourceType) notFound()
+  } else {
+    notFound()
+  }
+
+  // 2. Build the Breadcrumbs
+  const breadcrumbItems = []
+  if (standard) breadcrumbItems.push({ label: standard.name, href: `/${standard.slug}` })
+  if (subject) breadcrumbItems.push({ label: subject.name, href: `/${standard.slug}/${subject.slug}` })
+  if (resourceType && slug.length === 1) breadcrumbItems.push({ label: resourceType.name, href: `/${resourceType.slug}` })
+  if (resourceType && slug.length === 2) breadcrumbItems.push({ label: resourceType.name, href: `/${standard.slug}/${resourceType.slug}` })
+  if (examType) breadcrumbItems.push({ label: examType.name, href: `/${examType.slug}` })
+
+  // 3. Query Resources based on resolved context
+  let query = (supabase.from('resources') as any).select(`
+    id, title, slug, file_size, year, created_at, views_count,
+    standards(name), subjects(name), resource_types(name)
+  `).eq('status', 'published')
+
+  if (standard) query = query.eq('standard_id', standard.id)
+  if (subject) query = query.eq('subject_id', subject.id)
+  if (resourceType) query = query.eq('resource_type_id', resourceType.id)
+  if (examType) query = query.eq('exam_type_id', examType.id)
+
+  const { data: resources, error } = await query.order('created_at', { ascending: false }).limit(100)
+
+  // 4. Generate JSON-LD CollectionPage
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: standard?.name || resourceType?.name || examType?.name,
+    description: `Collection of educational resources for ${standard?.name || resourceType?.name || examType?.name}.`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'}/${slug.join('/')}`
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <Breadcrumbs items={breadcrumbItems} />
+
+      <div className="mt-4 mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">
+          {standard && subject && `${standard.name} ${subject.name} Materials`}
+          {standard && resourceType && `${standard.name} ${resourceType.name}`}
+          {standard && !subject && !resourceType && `${standard.name} Study Materials`}
+          {resourceType && !standard && `${resourceType.name} (All Standards)`}
+          {examType && !standard && `${examType.name} Papers`}
+        </h1>
+        <p className="text-slate-600">
+          Browse and download free educational resources, guides, and question papers.
+        </p>
+      </div>
+
+      {(!resources || resources.length === 0) ? (
+        <div className="text-center py-24 bg-white rounded-xl border border-dashed shadow-sm">
+          <BookOpen className="mx-auto h-12 w-12 text-slate-300 mb-4" />
+          <h3 className="text-lg font-medium text-slate-900 mb-1">No resources found</h3>
+          <p className="text-slate-500">We are currently updating materials for this section.</p>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {resources.map((resource: any) => (
+            <Card key={resource.id} className="hover:shadow-md transition-shadow group flex flex-col">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                    {resource.resource_types?.name || 'Resource'}
+                  </span>
+                  {resource.year && (
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {resource.year}
+                    </span>
+                  )}
+                </div>
+                <CardTitle className="text-base leading-tight mt-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                  <Link href={`/resources/${resource.slug}`} className="before:absolute before:inset-0">
+                    {resource.title}
+                  </Link>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="mt-auto">
+                <div className="flex items-center justify-between text-sm text-slate-500">
+                  <div className="flex items-center gap-4">
+                    {resource.file_size && (
+                      <span className="flex items-center gap-1">
+                        <Download className="h-3.5 w-3.5" />
+                        {(resource.file_size / 1024 / 1024).toFixed(1)} MB
+                      </span>
+                    )}
+                    {(resource.views_count || 0) > 0 && (
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-3.5 w-3.5" />
+                        {resource.views_count}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
