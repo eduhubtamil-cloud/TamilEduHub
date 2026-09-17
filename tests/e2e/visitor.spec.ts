@@ -13,7 +13,7 @@ test.describe('Visitor E2E Flow', () => {
 
     // 3. Verify search results page
     await page.waitForURL(/\/search/);
-    await expect(page.locator('h1').first()).toContainText('Search');
+    await expect(page.locator('h1').first()).toContainText('What are you looking');
 
     // 4. Click the first resource in the results
     const firstResource = page.locator('a[href^="/resources/"]').first();

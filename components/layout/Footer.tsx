@@ -2,7 +2,10 @@ import Link from 'next/link'
 import { BookOpen } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
 
-export function Footer() {
+import { getDictionary } from "@/lib/i18n";
+
+export async function Footer() {
+  const dict = await getDictionary();
   return (
     <footer className="bg-slate-900 text-slate-300 py-16 border-t border-slate-800">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -15,11 +18,9 @@ export function Footer() {
               </div>
               <span className="font-bold text-2xl text-white">TamilEduHub</span>
             </Link>
-            <p className="text-slate-400 mb-6 leading-relaxed max-w-sm">
-              தமிழ்நாடு மாணவர்களுக்கான முழுமையான கல்வி வளங்கள். பாடப்புத்தகங்கள், Study Materials, Question Papers, Notes மற்றும் PDF வளங்களை ஒரே இடத்தில் எளிதாக அணுகுங்கள்.
-            </p>
+            <p className="text-slate-400 mb-6 leading-relaxed max-w-sm">{dict.footerDesc}</p>
             <div className="mb-4">
-              <h4 className="text-white font-semibold mb-3">சமூகத்துடன் இணையுங்கள் (Join Us)</h4>
+              <h4 className="text-white font-semibold mb-3">{dict.footerConnect}</h4>
               <CommunityLinksWrapper location="footer" variant="icon" />
             </div>
           </div>
@@ -27,20 +28,20 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4 uppercase tracking-wider text-sm">School Resources</h4>
             <ul className="space-y-3">
-              <li><Link href="/standards" className="hover:text-white transition-colors">Standards</Link></li>
-              <li><Link href="/subjects" className="hover:text-white transition-colors">Subjects</Link></li>
-              <li><Link href="/textbooks" className="hover:text-white transition-colors">Textbooks</Link></li>
-              <li><Link href="/study-guides" className="hover:text-white transition-colors">Study Materials</Link></li>
+              <li><Link href="/resources" className="hover:text-white transition-colors">{dict.footerStandards}</Link></li>
+              <li><Link href="/resources" className="hover:text-white transition-colors">{dict.footerSubjects}</Link></li>
+              <li><Link href="/textbook" className="hover:text-white transition-colors">{dict.footerTextbooks}</Link></li>
+              <li><Link href="/study-guide" className="hover:text-white transition-colors">{dict.footerStudyMaterials}</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Resources</h4>
-            <ul className="space-y-3">
-              <li><Link href="/question-papers" className="hover:text-white transition-colors">Question Papers</Link></li>
-              <li><Link href="/collections" className="hover:text-white transition-colors">Collections</Link></li>
-              <li><Link href="/articles" className="hover:text-white transition-colors">Educational News</Link></li>
-              <li><Link href="/search" className="hover:text-white transition-colors">Search Resources</Link></li>
+            <h3 className="font-semibold text-white mb-6 tracking-wider text-sm">{dict.footerResources}</h3>
+            <ul className="space-y-4 text-sm">
+              <li><Link href="/question-papers" className="hover:text-white transition-colors">{dict.footerQuestionPapers}</Link></li>
+              <li><Link href="/search?q=collections" className="hover:text-white transition-colors">{dict.footerCollections}</Link></li>
+              <li><Link href="/articles" className="hover:text-white transition-colors">{dict.footerEducationalNews}</Link></li>
+              <li><Link href="/search" className="hover:text-white transition-colors">{dict.footerSearchResources}</Link></li>
             </ul>
           </div>
 
@@ -59,7 +60,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
           <p>&copy; {new Date().getFullYear()} TamilEduHub. All rights reserved.</p>
-          <p>Built for Tamil Nadu Students.</p>
+          <p>{dict.builtFor}</p>
         </div>
       </div>
     </footer>

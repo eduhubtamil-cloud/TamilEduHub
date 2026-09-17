@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getDictionary } from '@/lib/i18n'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +14,8 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
   const searchParams = await props.searchParams
   const query = searchParams.q
   const sortParam = searchParams.sort || 'latest'
-  const supabase = await createClient()
+  const supabase = await createClient();
+  const dict = await getDictionary();
 
   let results: any[] = []
   
@@ -41,7 +43,7 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
       {/* Search Hero */}
       <div className="bg-white border-b border-slate-200 py-10 px-4">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-slate-900 mb-6 text-center">எதை தேடுகிறீர்கள்? (Search)</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-6 text-center">{dict.whatAreYouLookingFor}</h1>
           <form className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <SearchIcon className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
@@ -65,10 +67,10 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
           <div>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <h2 className="text-xl font-medium text-slate-700">
-                Found <span className="font-bold text-slate-900">{results.length}</span> results for &quot;<span className="font-bold text-slate-900">{query}</span>&quot;
+                {dict.showingResults} <span className="font-bold text-slate-900">{results.length}</span> ( &quot;<span className="font-bold text-slate-900">{query}</span>&quot; )
               </h2>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">Sort by:</span>
+                <span className="text-sm text-slate-500">{dict.sortBy || "Sort by:"}</span>
                 <div className="flex rounded-lg overflow-hidden border border-slate-200 bg-white shadow-sm">
                   <Link 
                     href={`/search?q=${query}&sort=latest`}
@@ -91,8 +93,8 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
                 <div className="bg-slate-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Compass className="h-12 w-12 text-slate-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">இந்த தேடலுக்கு வளங்கள் கிடைக்கவில்லை</h3>
-                <p className="text-slate-500 mb-8 max-w-md mx-auto text-lg">We couldn't find any resources matching your search. Try using different keywords or browsing our categories.</p>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">{dict.noResultsFound}</h3>
+                <p className="text-slate-500 mb-8 max-w-md mx-auto text-lg">{dict.noResultsDesc}</p>
                 <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-8 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors">
                   முகப்பிற்கு செல்ல (Go Home)
                 </Link>
@@ -100,7 +102,7 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {results.map((resource: any) => (
-                  <ResourceCard key={resource.id} resource={resource} />
+                  <ResourceCard key={resource.id} resource={resource} dict={dict} />
                 ))}
               </div>
             )}
@@ -110,8 +112,8 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
             <div className="bg-slate-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
               <SearchIcon className="h-12 w-12 text-slate-400" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Search our resources</h2>
-            <p className="text-slate-500 max-w-md mx-auto text-lg">Type a keyword above to find textbooks, guides, and question papers instantly.</p>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">{dict.searchOurResources}</h2>
+            <p className="text-slate-500 max-w-md mx-auto text-lg">{dict.searchOurResourcesDesc}</p>
           </div>
         )}
       </div>

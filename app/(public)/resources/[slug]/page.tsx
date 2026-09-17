@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getDictionary } from '@/lib/i18n'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { BookmarkButton } from '@/components/ui/BookmarkButton'
@@ -15,7 +16,9 @@ import { ResourceCard } from '@/components/ui/ResourceCard'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = await createClient();
+  const dict = await getDictionary();;
+
   const { data } = await supabase.from('resources').select('title, description, canonical_url, seo_title, seo_description').eq('slug', slug).single()
   const resource = data as any
   
@@ -35,6 +38,7 @@ export default async function ResourcePage({
 }: {
   params: Promise<{ slug: string }>
 }) {
+  const dict = await getDictionary();
   const { slug } = await params;
   const supabase = await createClient()
 
@@ -124,7 +128,7 @@ export default async function ResourcePage({
             <div className="flex gap-3 shrink-0 w-full lg:w-auto">
               <Button size="lg" className="flex-1 lg:flex-none h-12 gap-2 bg-blue-600 hover:bg-blue-700 font-semibold" asChild>
                 <a href={`/api/download?resource_id=${resource.id}`} target="_blank" rel="noopener noreferrer">
-                  <Download className="h-5 w-5" /> Download PDF
+                  <Download className="h-5 w-5" /> {dict.downloadPdf}
                 </a>
               </Button>
               <BookmarkButton contentId={resource.id} contentType="resource" />
@@ -226,7 +230,7 @@ export default async function ResourcePage({
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedResources.map((res: any) => (
-                <ResourceCard key={res.id} resource={res} />
+                <ResourceCard key={res.id} resource={res} dict={dict} />
               ))}
             </div>
           </div>

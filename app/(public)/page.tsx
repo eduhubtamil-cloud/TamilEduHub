@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Search, BookOpen, FileText, Download, TrendingUp, Compass, Grid, FileQuestion, BookMarked, GraduationCap, ArrowRight } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
 import { ResourceCard } from '@/components/ui/ResourceCard'
+import { getDictionary } from '@/lib/i18n'
 
 export const metadata = {
   title: 'TamilEduHub - Modern Tamil Educational Resources',
@@ -12,6 +13,7 @@ export const metadata = {
 
 export default async function HomePage() {
   const supabase = await createClient()
+  const dict = await getDictionary()
 
   // Execute all queries in parallel
   const [
@@ -42,13 +44,13 @@ export default async function HomePage() {
       <section className="bg-gradient-to-b from-blue-900 to-slate-900 text-white pt-24 pb-20 px-4 text-center">
         <div className="max-w-4xl mx-auto">
           <span className="inline-block py-1 px-3 rounded-full bg-blue-800/50 text-blue-200 text-sm font-medium mb-6 border border-blue-700/50 backdrop-blur-sm">
-            1 முதல் 12 ஆம் வகுப்பு வரை • தமிழ் & ஆங்கில வழி
+            {dict.heroPill}
           </span>
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-            தமிழ்நாடு மாணவர்களுக்கான<br className="hidden md:block" /> முழுமையான கல்வி வளங்கள்
+            {dict.heroTitle1}<br className="hidden md:block" /> {dict.heroTitle2}
           </h1>
           <p className="text-base md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            பாடப்புத்தகங்கள், Study Materials, Question Papers, Notes மற்றும் PDF வளங்களை ஒரே இடத்தில் எளிதாக அணுகுங்கள்.
+            {dict.heroDescription}
           </p>
           
           <form action="/search" method="GET" className="max-w-3xl mx-auto relative flex items-center shadow-2xl group">
@@ -56,12 +58,12 @@ export default async function HomePage() {
             <input 
               type="search" 
               name="q" 
-              placeholder="எதை தேடுகிறீர்கள்? (Search textbooks, notes...)" 
+              placeholder={dict.searchPlaceholder}
               className="w-full h-14 md:h-20 pl-10 md:pl-14 pr-24 md:pr-36 rounded-xl md:rounded-2xl text-slate-900 text-base md:text-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all border-none"
               required
             />
             <Button type="submit" size="lg" className="absolute right-1.5 md:right-3 h-11 md:h-14 px-4 md:px-8 rounded-lg md:rounded-xl bg-blue-600 hover:bg-blue-700 text-sm md:text-lg font-semibold transition-all">
-              தேடுங்கள்
+              {dict.searchButton}
             </Button>
           </form>
         </div>
@@ -71,12 +73,12 @@ export default async function HomePage() {
       <section className="container mx-auto px-4 max-w-7xl -mt-10 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
           {[
-            { title: 'பாடப்புத்தகங்கள்', href: '/textbooks', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50' },
-            { title: 'Study Materials', href: '/study-guides', icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-            { title: 'Question Papers', href: '/question-papers', icon: FileQuestion, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-            { title: 'Notes & Guides', href: '/search?q=notes', icon: BookMarked, color: 'text-amber-600', bg: 'bg-amber-50' },
-            { title: 'PDF Resources', href: '/resources', icon: Download, color: 'text-rose-600', bg: 'bg-rose-50' },
-            { title: 'Popular', href: '/collections', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' }
+            { title: dict.textbooks, href: '/textbooks', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50' },
+            { title: dict.studyMaterials, href: '/study-guides', icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+            { title: dict.questionPapers, href: '/question-papers', icon: FileQuestion, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { title: dict.notesAndGuides || 'Notes & Guides', href: '/search?q=notes', icon: BookMarked, color: 'text-amber-600', bg: 'bg-amber-50' },
+            { title: dict.pdfResources || 'PDF Resources', href: '/resources', icon: Download, color: 'text-rose-600', bg: 'bg-rose-50' },
+            { title: dict.popular, href: '/search?sort=popular', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' }
           ].map((item) => (
             <Link href={item.href} key={item.title}>
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-lg hover:border-blue-200 transition-all h-full flex flex-col items-center justify-center text-center group">
@@ -96,8 +98,8 @@ export default async function HomePage() {
         {standardCards.length > 0 && (
           <section>
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">உங்கள் வகுப்பை தேர்வு செய்யுங்கள்</h2>
-              <p className="text-slate-500 max-w-2xl mx-auto">1 முதல் 12 ஆம் வகுப்பு வரையிலான அனைத்து பாடப்புத்தகங்கள் மற்றும் வினாத்தாள்களை வகுப்புகள் வாரியாக தேடுங்கள்.</p>
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">{dict.chooseStandard}</h2>
+              <p className="text-slate-500 max-w-2xl mx-auto">{dict.chooseStandardDesc}</p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
               {standardCards.map((std: any) => {
@@ -109,7 +111,7 @@ export default async function HomePage() {
                       <span className={`text-4xl md:text-5xl font-black mb-2 ${isHighDemand ? 'text-blue-600' : 'text-slate-700 group-hover:text-blue-600 transition-colors'}`}>
                         {std.display_order}
                       </span>
-                      <span className="text-sm md:text-base font-semibold text-slate-600">ஆம் வகுப்பு</span>
+                      <span className="text-sm md:text-base font-semibold text-slate-600">{dict.class}</span>
                       <div className="flex gap-2 mt-3 opacity-60 group-hover:opacity-100 transition-opacity">
                         <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Tamil</span>
                         <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">English</span>
@@ -127,10 +129,10 @@ export default async function HomePage() {
           <section>
             <div className="flex justify-between items-end mb-8">
               <div>
-                <h2 className="text-3xl font-bold text-slate-900 mb-2">சிறப்பு தொகுப்புகள்</h2>
+                <h2 className="text-3xl font-bold text-slate-900 mb-2">{dict.featuredCollections || 'Featured Collections'}</h2>
                 <p className="text-slate-500">பல்வேறு வளங்களை ஒன்றிணைத்த சிறப்பு தொகுப்புகள்.</p>
               </div>
-              <Link href="/collections" className="hidden md:flex items-center text-blue-600 font-medium hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-full">
+              <Link href="/search?q=collections" className="hidden md:flex items-center text-blue-600 font-medium hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-full">
                 அனைத்தும் <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
             </div>
@@ -160,7 +162,7 @@ export default async function HomePage() {
             <div className="flex justify-between items-center border-b-2 border-slate-200 pb-4 mb-6">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
                 <div className="p-2 bg-rose-100 text-rose-600 rounded-lg"><TrendingUp className="h-5 w-5" /></div>
-                அதிகம் பார்க்கப்பட்டவை
+                {dict.popularResources}
               </h2>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -168,7 +170,7 @@ export default async function HomePage() {
             </div>
             <div className="mt-6 text-center">
               <Link href="/resources" className="text-blue-600 font-medium hover:underline flex items-center justify-center gap-2">
-                View All Popular <ArrowRight className="h-4 w-4" />
+                {dict.viewAllPopular} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -178,7 +180,7 @@ export default async function HomePage() {
             <div className="flex justify-between items-center border-b-2 border-slate-200 pb-4 mb-6">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
                 <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><BookOpen className="h-5 w-5" /></div>
-                புதிய வளங்கள்
+                {dict.latestResources}
               </h2>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -186,28 +188,16 @@ export default async function HomePage() {
             </div>
             <div className="mt-6 text-center">
               <Link href="/resources" className="text-blue-600 font-medium hover:underline flex items-center justify-center gap-2">
-                View All Latest <ArrowRight className="h-4 w-4" />
+                {dict.viewAllLatest} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
         </section>
 
         {/* 6. COMMUNITY ACQUISITION (CORE) */}
-        <section className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-8 md:p-16 text-center text-white shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10 pointer-events-none">
-            <Compass className="absolute -top-10 -left-10 w-64 h-64" />
-            <BookOpen className="absolute -bottom-10 -right-10 w-64 h-64" />
-          </div>
-          <div className="relative z-10 max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">TamilEduHub சமூகத்துடன் இணைந்திருங்கள்</h2>
-            <p className="text-lg md:text-xl text-blue-100 mb-10 leading-relaxed">
-              புதிய கல்வி வளங்கள், Question Papers, மற்றும் Study Materials பற்றிய உடனடி தகவல்களை பெற எங்கள் சமூகத்தில் இணையுங்கள்.
-            </p>
-            <div className="bg-white/10 p-6 md:p-8 rounded-2xl backdrop-blur-md border border-white/20">
-              <CommunityLinksWrapper location="homepage_bottom" compact={false} />
-            </div>
-          </div>
-        </section>
+        <div className="max-w-[1100px] mx-auto w-full px-4 mb-16">
+          <CommunityLinksWrapper location="homepage_bottom" compact={false} />
+        </div>
 
       </main>
     </div>

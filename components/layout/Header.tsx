@@ -1,13 +1,23 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Search as SearchIcon, Menu, User, Settings, LogOut, ChevronDown } from 'lucide-react'
+import { BookOpen, Search as SearchIcon, User } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
+
+import { getDictionary, getLanguage } from '@/lib/i18n'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { MobileNav } from '@/components/layout/MobileNav'
+import { PrimaryNav } from '@/components/layout/PrimaryNav'
+
+import { signout } from '@/app/auth/actions'
 
 export async function Header() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const dict = await getDictionary()
+  const currentLang = await getLanguage()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let profile: any = null
   if (user) {
     const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
@@ -15,72 +25,75 @@ export async function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm">
-      <div className="container mx-auto px-4 max-w-7xl h-16 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-all">
+      <div className="mx-auto px-4 lg:px-6 xl:px-8 max-w-[1440px] h-16 flex items-center justify-between gap-4">
         
-        <div className="flex items-center gap-6 lg:gap-10">
-          <Link href="/" className="flex items-center space-x-2 group shrink-0">
-            <div className="bg-blue-600 p-1.5 rounded-lg text-white group-hover:bg-blue-500 transition-colors shadow-sm">
-              <BookOpen className="h-5 w-5" />
+        {/* ZONE 1: BRAND */}
+        <div className="flex items-center shrink-0 h-full">
+          <Link href="/" className="flex items-center space-x-2.5 group h-full">
+            <div className="bg-blue-600 p-1.5 rounded-lg text-white group-hover:bg-blue-700 transition-colors">
+              <BookOpen className="h-[22px] w-[22px] sm:h-6 sm:w-6" />
             </div>
-            <span className="font-bold text-xl text-slate-900 tracking-tight">TamilEduHub</span>
+            <span className="font-[650] text-[20px] sm:text-[21px] text-slate-900 tracking-tight">TamilEduHub</span>
           </Link>
-
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-            <Link href="/" className="transition-colors text-slate-600 hover:text-blue-600">Home</Link>
-            <Link href="/standards" className="transition-colors text-slate-600 hover:text-blue-600">பள்ளி வளங்கள்</Link>
-            <Link href="/textbooks" className="transition-colors text-slate-600 hover:text-blue-600">பாடப்புத்தகங்கள்</Link>
-            <Link href="/study-guides" className="transition-colors text-slate-600 hover:text-blue-600">Study Materials</Link>
-            <Link href="/question-papers" className="transition-colors text-slate-600 hover:text-blue-600">Question Papers</Link>
-            <Link href="/collections" className="transition-colors text-slate-600 hover:text-blue-600">Collections</Link>
-          </nav>
         </div>
 
-        <div className="flex flex-1 items-center justify-end gap-3 md:gap-5">
-          <form action="/search" method="GET" className="hidden sm:flex items-center relative flex-1 max-w-[280px]">
-            <SearchIcon className="absolute left-3 h-4 w-4 text-slate-400" />
-            <input 
-              type="search" 
-              name="q" 
-              placeholder="Search resources..." 
-              className="w-full h-10 pl-9 pr-4 rounded-full bg-slate-100 border-transparent text-sm focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
-            />
-          </form>
+        {/* ZONE 2: PRIMARY NAVIGATION */}
+        <div className="hidden lg:flex flex-1 justify-center h-full px-2 xl:px-4">
+          <PrimaryNav dict={dict} />
+        </div>
 
-          <div className="hidden md:block border-l border-slate-200 h-6 mx-1"></div>
+        {/* ZONE 3: UTILITIES & ACTIONS */}
+        <div className="flex items-center justify-end gap-3 xl:gap-4 shrink-0">
+          
+          <LanguageSwitcher currentLang={currentLang as 'en'|'ta'} />
+          
+          <Link 
+            href="/search" 
+            className="hidden sm:flex items-center justify-center h-[38px] w-[38px] rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors focus:ring-2 focus:ring-blue-500/20 outline-none" 
+            aria-label={dict.search}
+          >
+            <SearchIcon className="h-[18px] w-[18px]" />
+          </Link>
 
-          <CommunityLinksWrapper location="header" variant="icon" />
+          <div className="hidden md:block w-px h-5 bg-slate-200" aria-hidden="true"></div>
 
-          <div className="hidden md:block border-l border-slate-200 h-6 mx-1"></div>
+          <div className="hidden md:flex items-center shrink-0" aria-label="Community Links">
+            <CommunityLinksWrapper location="header" variant="icon" />
+          </div>
+
+          <div className="hidden md:block w-px h-5 bg-slate-200" aria-hidden="true"></div>
 
           {user ? (
-            <div className="flex items-center gap-3 shrink-0">
-              <Link href="/account/profile" className="hidden sm:flex h-9 w-9 rounded-full bg-slate-100 overflow-hidden border border-slate-200 items-center justify-center hover:ring-2 hover:ring-blue-600 hover:ring-offset-2 transition-all" title={profile?.full_name || 'My Profile'}>
+            <div className="hidden sm:flex items-center gap-2 shrink-0 bg-white border border-slate-200 hover:border-slate-300 transition-colors rounded-full pl-1 pr-3 py-1">
+              <Link href="/account/profile" className="flex h-7 w-7 rounded-full bg-slate-100 overflow-hidden items-center justify-center" aria-label={dict.myProfile}>
                 {profile?.avatar_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
+                  <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <User className="h-5 w-5 text-slate-500" />
+                  <User className="h-4 w-4 text-slate-500" />
                 )}
               </Link>
-              <form action="/auth/signout" method="post">
-                <Button variant="ghost" size="sm" type="submit" className="text-slate-600 hover:text-slate-900 font-medium">Log Out</Button>
+              <form action={signout} className="flex items-center">
+                <button type="submit" className="text-[13px] font-medium text-slate-700 hover:text-slate-900 flex items-center gap-1.5 transition-colors" aria-label={dict.logout}>
+                  {dict.logout}
+                </button>
               </form>
             </div>
           ) : (
-            <div className="flex items-center shrink-0">
-              <Button variant="outline" size="sm" className="hidden sm:flex mr-2 font-medium" asChild>
-                <Link href="/account/register">Register</Link>
+            <div className="hidden sm:flex items-center gap-2 shrink-0">
+              <Button variant="ghost" size="sm" className="h-[38px] px-3 font-medium text-slate-700" asChild>
+                <Link href="/account/register">{dict.register}</Link>
               </Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 font-medium shadow-sm" asChild>
-                <Link href="/account/login">Log In</Link>
+              <Button size="sm" className="h-[38px] px-4 bg-blue-600 hover:bg-blue-700 font-medium rounded-full shadow-sm" asChild>
+                <Link href="/account/login">{dict.login}</Link>
               </Button>
             </div>
           )}
 
-          <Button variant="ghost" size="icon" className="lg:hidden text-slate-600">
-            <Menu className="h-5 w-5" />
-          </Button>
+          <MobileNav dict={dict} profile={profile} currentLang={currentLang as 'en'|'ta'}>
+            <CommunityLinksWrapper location="mobile" variant="compact" />
+          </MobileNav>
         </div>
 
       </div>

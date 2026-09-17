@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Calendar, Download, Eye, FileText } from 'lucide-react'
 
-export function ResourceCard({ resource }: { resource: any }) {
+export function ResourceCard({ resource, dict }: { resource: any, dict?: Record<string, string> }) {
   const isQuestionPaper = resource.resource_types?.slug === 'question-papers' || resource.exam_type_id;
   const badgeColor = isQuestionPaper ? 'text-emerald-700 bg-emerald-50' : 'text-blue-700 bg-blue-50';
 
@@ -51,7 +51,7 @@ export function ResourceCard({ resource }: { resource: any }) {
             {!resource.file_size && !resource.views_count && (
                <span className="flex items-center gap-1.5 font-medium">
                 <FileText className="h-3.5 w-3.5" />
-                PDF Document
+                {dict?.pdfDocument || "PDF Document"}
               </span>
             )}
           </div>

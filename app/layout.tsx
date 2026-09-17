@@ -14,13 +14,17 @@ export const metadata: Metadata = {
   description: 'Download study materials, question papers, and educational resources.',
 }
 
-export default function RootLayout({
+import { getLanguage } from '@/lib/i18n'
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const lang = await getLanguage()
+  
   return (
-    <html lang="ta">
+    <html lang={lang}>
       <body className={`${inter.variable} ${notoSansTamil.variable} font-sans min-h-screen bg-white text-slate-900 antialiased`}>
         {children}
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_ANALYTICS_ID} />

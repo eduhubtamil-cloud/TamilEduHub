@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
+import { getDictionary } from '@/lib/i18n'
 import Link from 'next/link'
 import { BookOpen } from 'lucide-react'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
@@ -7,7 +8,8 @@ import { ResourceCard } from '@/components/ui/ResourceCard'
 
 // Helper to fetch entities by slug
 async function fetchEntityBySlug(table: string, slug: string) {
-  const supabase = await createClient()
+  const supabase = await createClient();
+
   const { data } = await (supabase.from(table) as any).select('*').eq('slug', slug).single()
   return data
 }
@@ -65,6 +67,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
 export default async function TaxonomyLandingPage(props: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await props.params
   const supabase = await createClient()
+  const dict = await getDictionary()
 
   // 1. Resolve what the URL means
   let standard: any = null
@@ -153,7 +156,7 @@ export default async function TaxonomyLandingPage(props: { params: Promise<{ slu
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {resources.map((resource: any) => (
-            <ResourceCard key={resource.id} resource={resource} />
+            <ResourceCard key={resource.id} resource={resource} dict={typeof dict !== 'undefined' ? dict : undefined} />
           ))}
         </div>
       )}
