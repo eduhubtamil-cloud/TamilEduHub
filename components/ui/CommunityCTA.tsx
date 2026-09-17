@@ -115,10 +115,10 @@ export function CommunityCTA({ links, location, compact = false, variant = 'defa
           <div key={link.id} className="flex flex-col items-center">
             <button
               onClick={() => handleTrackClick(link.id, link.platform, link.url)}
-              className={`flex flex-col items-center justify-center py-4 px-8 rounded-xl transition-transform hover:-translate-y-1 shadow-md w-full sm:w-auto ${getColors(link.platform)}`}
+              className={`flex flex-col items-center justify-center py-4 px-4 sm:px-8 rounded-xl transition-transform hover:-translate-y-1 shadow-md w-full sm:w-auto ${getColors(link.platform)}`}
             >
-              <div className="flex items-center gap-3 font-bold text-lg mb-1">
-                {getIcon(link.platform, "h-6 w-6")}
+              <div className="flex items-center gap-2 sm:gap-3 font-bold text-base sm:text-lg mb-1 whitespace-nowrap">
+                {getIcon(link.platform, "h-5 w-5 sm:h-6 sm:w-6 shrink-0")}
                 {link.label}
               </div>
               {link.description && (

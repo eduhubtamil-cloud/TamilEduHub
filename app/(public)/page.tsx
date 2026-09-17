@@ -44,23 +44,23 @@ export default async function HomePage() {
           <span className="inline-block py-1 px-3 rounded-full bg-blue-800/50 text-blue-200 text-sm font-medium mb-6 border border-blue-700/50 backdrop-blur-sm">
             1 முதல் 12 ஆம் வகுப்பு வரை • தமிழ் & ஆங்கில வழி
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
             தமிழ்நாடு மாணவர்களுக்கான<br className="hidden md:block" /> முழுமையான கல்வி வளங்கள்
           </h1>
-          <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
             பாடப்புத்தகங்கள், Study Materials, Question Papers, Notes மற்றும் PDF வளங்களை ஒரே இடத்தில் எளிதாக அணுகுங்கள்.
           </p>
           
           <form action="/search" method="GET" className="max-w-3xl mx-auto relative flex items-center shadow-2xl group">
-            <Search className="absolute left-5 h-6 w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+            <Search className="absolute left-4 md:left-5 h-5 w-5 md:h-6 md:w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
             <input 
               type="search" 
               name="q" 
-              placeholder="எதை தேடுகிறீர்கள்? (Search textbooks, notes, papers...)" 
-              className="w-full h-16 md:h-20 pl-14 pr-36 rounded-2xl text-slate-900 text-lg md:text-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all border-none"
+              placeholder="எதை தேடுகிறீர்கள்? (Search textbooks, notes...)" 
+              className="w-full h-14 md:h-20 pl-10 md:pl-14 pr-24 md:pr-36 rounded-xl md:rounded-2xl text-slate-900 text-base md:text-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all border-none"
               required
             />
-            <Button type="submit" size="lg" className="absolute right-2 md:right-3 h-12 md:h-14 px-6 md:px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-base md:text-lg font-semibold transition-all">
+            <Button type="submit" size="lg" className="absolute right-1.5 md:right-3 h-11 md:h-14 px-4 md:px-8 rounded-lg md:rounded-xl bg-blue-600 hover:bg-blue-700 text-sm md:text-lg font-semibold transition-all">
               தேடுங்கள்
             </Button>
           </form>
