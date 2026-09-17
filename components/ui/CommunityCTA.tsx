@@ -15,9 +15,10 @@ interface CommunityCTAProps {
   links: CommunityLink[]
   location: string
   compact?: boolean
+  variant?: 'default' | 'compact' | 'icon'
 }
 
-export function CommunityCTA({ links, location, compact = false }: CommunityCTAProps) {
+export function CommunityCTA({ links, location, compact = false, variant = 'default' }: CommunityCTAProps) {
   const handleTrackClick = (linkId: string, platform: string, url: string) => {
     let utmSource, utmMedium, utmCampaign, deviceCategory;
     try {
@@ -65,7 +66,27 @@ export function CommunityCTA({ links, location, compact = false }: CommunityCTAP
     return 'bg-white hover:bg-slate-50 text-slate-900 border-slate-200'
   }
 
-  if (compact) {
+  const effectiveVariant = variant === 'default' && compact ? 'compact' : variant
+
+  if (effectiveVariant === 'icon') {
+    return (
+      <div className="flex items-center gap-2">
+        {links.map((link) => (
+          <button
+            key={link.id}
+            onClick={() => handleTrackClick(link.id, link.platform, link.url)}
+            className={`flex items-center justify-center h-9 w-9 rounded-full transition-colors border ${getColors(link.platform)}`}
+            title={link.label}
+          >
+            {getIcon(link.platform, "h-4 w-4")}
+            <span className="sr-only">{link.label}</span>
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  if (effectiveVariant === 'compact') {
     return (
       <div className="flex flex-col gap-3">
         {links.map((link) => (

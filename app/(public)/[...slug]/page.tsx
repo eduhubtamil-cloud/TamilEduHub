@@ -1,9 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { FileText, Download, Eye, Calendar, BookOpen } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
+import { ResourceCard } from '@/components/ui/ResourceCard'
 
 // Helper to fetch entities by slug
 async function fetchEntityBySlug(table: string, slug: string) {
@@ -100,7 +100,7 @@ export default async function TaxonomyLandingPage(props: { params: Promise<{ slu
   // 3. Query Resources based on resolved context
   let query = (supabase.from('resources') as any).select(`
     id, title, slug, file_size, year, created_at, views_count,
-    standards(name), subjects(name), resource_types(name)
+    standards(name), subjects(name), resource_types(slug, name)
   `).eq('status', 'published')
 
   if (standard) query = query.eq('standard_id', standard.id)
@@ -120,70 +120,40 @@ export default async function TaxonomyLandingPage(props: { params: Promise<{ slu
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <div className="mt-4 mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">
+      <div className="mt-6 mb-10 border-b border-slate-200 pb-8">
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 mb-3">
           {standard && subject && `${standard.name} ${subject.name} Materials`}
           {standard && resourceType && `${standard.name} ${resourceType.name}`}
           {standard && !subject && !resourceType && `${standard.name} Study Materials`}
           {resourceType && !standard && `${resourceType.name} (All Standards)`}
           {examType && !standard && `${examType.name} Papers`}
         </h1>
-        <p className="text-slate-600">
+        <p className="text-lg text-slate-600 max-w-2xl">
           Browse and download free educational resources, guides, and question papers.
         </p>
       </div>
 
       {(!resources || resources.length === 0) ? (
-        <div className="text-center py-24 bg-white rounded-xl border border-dashed shadow-sm">
-          <BookOpen className="mx-auto h-12 w-12 text-slate-300 mb-4" />
-          <h3 className="text-lg font-medium text-slate-900 mb-1">No resources found</h3>
-          <p className="text-slate-500">We are currently updating materials for this section.</p>
+        <div className="text-center py-32 bg-white rounded-3xl border border-dashed border-slate-300 shadow-sm">
+          <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <BookOpen className="h-10 w-10 text-slate-400" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-900 mb-2">No resources available yet</h3>
+          <p className="text-slate-500 mb-8 max-w-md mx-auto">We are actively updating materials for this section. Please check back later or try a different category.</p>
+          <div className="flex justify-center gap-4">
+            <Link href="/" className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors">
+              Browse Categories
+            </Link>
+          </div>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {resources.map((resource: any) => (
-            <Card key={resource.id} className="hover:shadow-md transition-shadow group flex flex-col">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                    {resource.resource_types?.name || 'Resource'}
-                  </span>
-                  {resource.year && (
-                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {resource.year}
-                    </span>
-                  )}
-                </div>
-                <CardTitle className="text-base leading-tight mt-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                  <Link href={`/resources/${resource.slug}`} className="before:absolute before:inset-0">
-                    {resource.title}
-                  </Link>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="mt-auto">
-                <div className="flex items-center justify-between text-sm text-slate-500">
-                  <div className="flex items-center gap-4">
-                    {resource.file_size && (
-                      <span className="flex items-center gap-1">
-                        <Download className="h-3.5 w-3.5" />
-                        {(resource.file_size / 1024 / 1024).toFixed(1)} MB
-                      </span>
-                    )}
-                    {(resource.views_count || 0) > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Eye className="h-3.5 w-3.5" />
-                        {resource.views_count}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ResourceCard key={resource.id} resource={resource} />
           ))}
         </div>
       )}

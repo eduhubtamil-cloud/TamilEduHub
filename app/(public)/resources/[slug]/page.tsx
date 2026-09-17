@@ -8,9 +8,10 @@ import { PdfViewer } from '@/components/ui/PdfViewer'
 import { ViewTracker } from '@/components/ui/ViewTracker'
 import { CommentsSection } from '@/components/ui/CommentsSection'
 import { Card, CardContent } from '@/components/ui/card'
-import { Download, FileText, Calendar, LayoutTemplate } from 'lucide-react'
+import { Download, FileText, Calendar, LayoutTemplate, BookOpen } from 'lucide-react'
 import { AdSlot } from '@/components/ui/AdSlot'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
+import { ResourceCard } from '@/components/ui/ResourceCard'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -57,12 +58,12 @@ export default async function ResourcePage({
   const fileSizeStr = resource.file_size ? `${(resource.file_size / (1024 * 1024)).toFixed(2)} MB` : 'PDF'
   
   // Fetch related resources (same standard or subject, excluding current)
-  const { data: relatedData } = await supabase
-    .from('resources')
-    .select('id, title, slug, thumbnail_url, standards(name)')
+  const { data: relatedData } = await (supabase.from('resources') as any)
+    .select('id, title, slug, description, file_size, year, created_at, views_count, standards(name), subjects(name), resource_types(slug, name)')
     .or(`standard_id.eq.${resource.standard_id},subject_id.eq.${resource.subject_id}`)
     .neq('id', resource.id)
     .eq('status', 'published')
+    .order('created_at', { ascending: false })
     .limit(4)
 
   const relatedResources = relatedData || []
@@ -91,120 +92,146 @@ export default async function ResourcePage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <ViewTracker id={resource.id} type="resources" />
-      <Breadcrumbs items={breadcrumbItems} />
-
-      <div className="flex flex-col lg:flex-row gap-8 mt-6">
-        {/* Main Content (PDF Viewer) */}
-        <div className="flex-1 space-y-6">
-          <div className="flex justify-between items-start gap-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{resource.title}</h1>
-            <div className="flex gap-2 shrink-0">
+    <div className="bg-slate-50 min-h-screen pb-16">
+      <div className="bg-white border-b border-slate-200 py-6">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+          <ViewTracker id={resource.id} type="resources" />
+          <Breadcrumbs items={breadcrumbItems} />
+          
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mt-6">
+            <div className="flex-1">
+              <div className="flex flex-wrap gap-2 mb-3">
+                {resource.standards?.name && (
+                  <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                    {resource.standards.name}
+                  </span>
+                )}
+                {resource.subjects?.name && (
+                  <span className="inline-flex items-center rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+                    {resource.subjects.name}
+                  </span>
+                )}
+                {resource.mediums?.name && (
+                  <span className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
+                    {resource.mediums.name}
+                  </span>
+                )}
+              </div>
+              <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">{resource.title}</h1>
+            </div>
+            
+            <div className="flex gap-3 shrink-0 w-full lg:w-auto">
+              <Button size="lg" className="flex-1 lg:flex-none h-12 gap-2 bg-blue-600 hover:bg-blue-700 font-semibold" asChild>
+                <a href={`/api/download?resource_id=${resource.id}`} target="_blank" rel="noopener noreferrer">
+                  <Download className="h-5 w-5" /> Download PDF
+                </a>
+              </Button>
               <BookmarkButton contentId={resource.id} contentType="resource" />
             </div>
           </div>
-          
-          <p className="text-slate-600 text-lg whitespace-pre-wrap">{resource.description}</p>
-
-          {resource.file_url ? (
-            <PdfViewer url={resource.file_url} title={resource.title} />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-64 bg-slate-50 text-slate-500 rounded-lg border border-dashed border-slate-200">
-              <FileText className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-              <p>PDF file not available.</p>
-            </div>
-          )}
-
-          <CommentsSection contentId={resource.id} contentType="resource" />
         </div>
-
-        {/* Sidebar Info */}
-        <aside className="w-full lg:w-80 space-y-6">
-          <Card>
-            <CardContent className="p-6 space-y-6">
-              {resource.file_url ? (
-                <Button className="w-full h-12 text-lg gap-2" asChild>
-                  <a href={`/api/download?resource_id=${resource.id}`} target="_blank" rel="noopener noreferrer">
-                    <Download className="h-5 w-5" /> Download PDF
-                  </a>
-                </Button>
-              ) : (
-                <Button className="w-full h-12 text-lg gap-2" disabled>
-                  File Not Available
-                </Button>
-              )}
-
-              <div className="space-y-4 pt-4 border-t border-slate-100">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 flex items-center gap-2"><LayoutTemplate className="h-4 w-4"/> Standard</span>
-                  <span className="font-medium text-slate-900">{resource.standards?.name || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 flex items-center gap-2"><FileText className="h-4 w-4"/> Subject</span>
-                  <span className="font-medium text-slate-900">{resource.subjects?.name || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 flex items-center gap-2"><FileText className="h-4 w-4"/> Medium</span>
-                  <span className="font-medium text-slate-900">{resource.mediums?.name || 'All'}</span>
-                </div>
-                {resource.year && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500 flex items-center gap-2"><Calendar className="h-4 w-4"/> Year</span>
-                    <span className="font-medium text-slate-900">{resource.year}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 flex items-center gap-2"><FileText className="h-4 w-4"/> Type</span>
-                  <span className="font-medium text-slate-900">{resource.resource_types?.name || 'Document'}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 flex items-center gap-2"><FileText className="h-4 w-4"/> Size</span>
-                  <span className="font-medium text-slate-900">{fileSizeStr}</span>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100">
-                <SocialShareButtons title={resource.title} description={resource.description} />
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
       </div>
 
-      {/* Related Resources */}
-      {relatedResources && relatedResources.length > 0 && (
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Related Study Materials</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedResources.map((res: any) => (
-              <Link href={`/resources/${res.slug}`} key={res.id} className="group">
-                <Card className="h-full hover:shadow-md transition-shadow border-slate-200">
-                  <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden flex items-center justify-center border-b">
-                    {res.thumbnail_url ? (
-                      <img src={res.thumbnail_url} alt={res.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <FileText className="h-12 w-12 text-slate-300" />
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                        {res.standards?.name}
-                      </span>
-                    </div>
-                    <h3 className="font-semibold text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {res.title}
-                    </h3>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="container mx-auto px-4 max-w-7xl mt-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* Main Content (PDF Viewer) */}
+          <div className="flex-1 space-y-8 min-w-0">
+            {resource.description && (
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 className="text-lg font-bold text-slate-900 mb-2">About this resource</h3>
+                <p className="text-slate-600 text-base md:text-lg whitespace-pre-wrap leading-relaxed">{resource.description}</p>
+              </div>
+            )}
 
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[700px]">
+              <div className="bg-slate-100 px-4 py-3 border-b border-slate-200 flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-2 text-slate-700 font-medium text-sm">
+                  <FileText className="h-4 w-4" /> PDF Document Preview
+                </div>
+              </div>
+              <div className="flex-1 overflow-hidden relative bg-slate-200/50">
+                {resource.file_url ? (
+                  <PdfViewer url={resource.file_url} title={resource.title} />
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full bg-slate-50 text-slate-500 p-8 text-center">
+                    <FileText className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                    <p className="text-lg font-medium text-slate-700">PDF preview not available</p>
+                    <p className="mt-1">This resource may not contain a viewable document.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <CommentsSection contentId={resource.id} contentType="resource" />
+            </div>
+          </div>
+
+          {/* Sidebar Info */}
+          <aside className="w-full lg:w-[320px] shrink-0 space-y-6">
+            <Card className="rounded-2xl border-slate-200 shadow-sm overflow-hidden">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-100">
+                <h3 className="font-bold text-slate-900">Resource Information</h3>
+              </div>
+              <CardContent className="p-6 space-y-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-3">
+                    <span className="text-slate-500 font-medium">Standard</span>
+                    <span className="font-bold text-slate-900 text-right">{resource.standards?.name || 'N/A'}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-3">
+                    <span className="text-slate-500 font-medium">Subject</span>
+                    <span className="font-bold text-slate-900 text-right">{resource.subjects?.name || 'N/A'}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-3">
+                    <span className="text-slate-500 font-medium">Medium</span>
+                    <span className="font-bold text-slate-900 text-right">{resource.mediums?.name || 'All'}</span>
+                  </div>
+                  {resource.year && (
+                    <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-3">
+                      <span className="text-slate-500 font-medium">Academic Year</span>
+                      <span className="font-bold text-slate-900 text-right">{resource.year}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-3">
+                    <span className="text-slate-500 font-medium">Type</span>
+                    <span className="font-bold text-slate-900 text-right">{resource.resource_types?.name || 'Document'}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-3">
+                    <span className="text-slate-500 font-medium">File Size</span>
+                    <span className="font-bold text-slate-900 text-right">{fileSizeStr}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-slate-500 font-medium">Total Views</span>
+                    <span className="font-bold text-slate-900 text-right">{resource.views_count || 0}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <SocialShareButtons title={resource.title} description={resource.description} />
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
+
+        {/* Related Resources */}
+        {relatedResources && relatedResources.length > 0 && (
+          <div className="mt-16 pt-12 border-t border-slate-200">
+            <h2 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-3">
+              <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><BookOpen className="h-5 w-5" /></div>
+              தொடர்புடைய கல்வி வளங்கள் (Related)
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedResources.map((res: any) => (
+                <ResourceCard key={res.id} resource={res} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

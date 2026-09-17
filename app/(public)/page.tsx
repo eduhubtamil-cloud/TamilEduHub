@@ -1,48 +1,19 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Search, ArrowRight, BookOpen, Newspaper, FileText, Download, Calendar } from 'lucide-react'
-import { AdSlot } from '@/components/ui/AdSlot'
+import { Search, BookOpen, FileText, Download, TrendingUp, Compass, Grid, FileQuestion, BookMarked, GraduationCap, ArrowRight } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
+import { ResourceCard } from '@/components/ui/ResourceCard'
 
 export const metadata = {
   title: 'TamilEduHub - Modern Tamil Educational Resources',
   description: 'Download study materials, question papers, and educational resources for Tamil Nadu school students.',
 }
 
-function ResourceCard({ resource }: { resource: any }) {
-  return (
-    <Card className="hover:shadow-md transition-shadow group h-full flex flex-col">
-      <CardHeader className="pb-2">
-        <div className="flex items-center gap-2 mb-2">
-          {resource.standards?.name && (
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-              {resource.standards.name}
-            </span>
-          )}
-          {resource.subjects?.name && (
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded truncate">
-              {resource.subjects.name}
-            </span>
-          )}
-        </div>
-        <CardTitle className="text-base leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
-          <Link href={`/resources/${resource.slug}`} className="before:absolute before:inset-0">
-            {resource.title}
-          </Link>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="mt-auto">
-        <p className="text-sm text-slate-500 line-clamp-2">{resource.description}</p>
-      </CardContent>
-    </Card>
-  )
-}
-
 export default async function HomePage() {
   const supabase = await createClient()
 
+  // Execute all queries in parallel
   const [
     { data: standards },
     { data: studyGuides },
@@ -50,62 +21,131 @@ export default async function HomePage() {
     { data: questionPapers },
     { data: collections },
     { data: latestResources },
-    { data: popularResources },
-    { data: latestArticles }
+    { data: popularResources }
   ] = await Promise.all([
-    supabase.from('standards').select('name, slug').order('display_order'),
-    (supabase.from('resources') as any).select('id, title, slug, description, standards(name), subjects(name)').eq('status', 'published').ilike('title', '%guide%').order('created_at', { ascending: false }).limit(4),
-    (supabase.from('resources') as any).select('id, title, slug, description, standards(name), subjects(name)').eq('status', 'published').ilike('title', '%textbook%').order('created_at', { ascending: false }).limit(4),
-    supabase.from('question_papers').select('id, title, slug, description, standards(name), subjects(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(4),
-    (supabase.from('collections') as any).select('id, title, slug, description').order('created_at', { ascending: false }).limit(4),
-    (supabase.from('resources') as any).select('id, title, slug, description, standards(name), subjects(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(5),
-    (supabase.from('resources') as any).select('id, title, slug, description, standards(name), subjects(name)').eq('status', 'published').order('views_count', { ascending: false }).limit(5),
-    supabase.from('articles').select('id, title, slug, excerpt').eq('status', 'published').order('published_at', { ascending: false }).limit(3)
+    supabase.from('standards').select('name, slug, display_order').order('display_order'),
+    (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').ilike('title', '%guide%').order('created_at', { ascending: false }).limit(4),
+    (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').ilike('title', '%textbook%').order('created_at', { ascending: false }).limit(4),
+    supabase.from('question_papers').select('id, title, slug, description, file_size:pdf_size, views_count, year, standards(name), subjects(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(4),
+    (supabase.from('collections') as any).select('id, title, slug, description').order('created_at', { ascending: false }).limit(3),
+    (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').order('created_at', { ascending: false }).limit(4),
+    (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').order('views_count', { ascending: false }).limit(4)
   ])
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <section className="bg-slate-900 text-white py-20 px-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 max-w-3xl mx-auto">
-          Find Any Tamil Nadu Study Material
-        </h1>
-        <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">
-          Search thousands of free guides, textbooks, and question papers for all standards.
-        </p>
-        
-        <form action="/search" method="GET" className="max-w-2xl mx-auto relative flex items-center">
-          <Search className="absolute left-4 h-5 w-5 text-slate-400" />
-          <input 
-            type="search" 
-            name="q" 
-            placeholder="e.g. 10th Science Quarterly Question Paper" 
-            className="w-full h-14 pl-12 pr-32 rounded-full text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <Button type="submit" className="absolute right-1.5 h-11 rounded-full px-6">
-            Search
-          </Button>
-        </form>
-      </section>
+  // Extract standard numbers for the grid (1 to 12)
+  const standardCards = standards?.filter((s: any) => s.display_order >= 1 && s.display_order <= 12) || []
 
-      <section className="py-8 bg-blue-50 border-b border-blue-100">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <CommunityLinksWrapper location="homepage_top" compact={true} />
+  return (
+    <div className="flex flex-col min-h-screen bg-slate-50">
+      
+      {/* 1. HERO SECTION */}
+      <section className="bg-gradient-to-b from-blue-900 to-slate-900 text-white pt-24 pb-20 px-4 text-center">
+        <div className="max-w-4xl mx-auto">
+          <span className="inline-block py-1 px-3 rounded-full bg-blue-800/50 text-blue-200 text-sm font-medium mb-6 border border-blue-700/50 backdrop-blur-sm">
+            1 முதல் 12 ஆம் வகுப்பு வரை • தமிழ் & ஆங்கில வழி
+          </span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+            தமிழ்நாடு மாணவர்களுக்கான<br className="hidden md:block" /> முழுமையான கல்வி வளங்கள்
+          </h1>
+          <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            பாடப்புத்தகங்கள், Study Materials, Question Papers, Notes மற்றும் PDF வளங்களை ஒரே இடத்தில் எளிதாக அணுகுங்கள்.
+          </p>
+          
+          <form action="/search" method="GET" className="max-w-3xl mx-auto relative flex items-center shadow-2xl group">
+            <Search className="absolute left-5 h-6 w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+            <input 
+              type="search" 
+              name="q" 
+              placeholder="எதை தேடுகிறீர்கள்? (Search textbooks, notes, papers...)" 
+              className="w-full h-16 md:h-20 pl-14 pr-36 rounded-2xl text-slate-900 text-lg md:text-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all border-none"
+              required
+            />
+            <Button type="submit" size="lg" className="absolute right-2 md:right-3 h-12 md:h-14 px-6 md:px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-base md:text-lg font-semibold transition-all">
+              தேடுங்கள்
+            </Button>
+          </form>
         </div>
       </section>
 
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-6xl space-y-20">
+      {/* 2. QUICK ACCESS CARDS */}
+      <section className="container mx-auto px-4 max-w-7xl -mt-10 relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          {[
+            { title: 'பாடப்புத்தகங்கள்', href: '/textbooks', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50' },
+            { title: 'Study Materials', href: '/study-guides', icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+            { title: 'Question Papers', href: '/question-papers', icon: FileQuestion, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { title: 'Notes & Guides', href: '/search?q=notes', icon: BookMarked, color: 'text-amber-600', bg: 'bg-amber-50' },
+            { title: 'PDF Resources', href: '/resources', icon: Download, color: 'text-rose-600', bg: 'bg-rose-50' },
+            { title: 'Popular', href: '/collections', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' }
+          ].map((item) => (
+            <Link href={item.href} key={item.title}>
+              <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-lg hover:border-blue-200 transition-all h-full flex flex-col items-center justify-center text-center group">
+                <div className={`${item.bg} ${item.color} p-3 rounded-xl mb-3 group-hover:scale-110 transition-transform`}>
+                  <item.icon className="h-6 w-6" />
+                </div>
+                <span className="font-semibold text-slate-800 text-sm md:text-base group-hover:text-blue-700 transition-colors">{item.title}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <main className="flex-1 container mx-auto px-4 py-16 max-w-7xl space-y-24">
         
-        {standards && standards.length > 0 && (
+        {/* 3. STANDARD SELECTOR */}
+        {standardCards.length > 0 && (
           <section>
-            <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-blue-600" /> Browse by Standard
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {standards.map((std: any) => (
-                <Link href={`/${std.slug}`} key={std.slug} className="group">
-                  <div className="bg-white border rounded-xl p-4 text-center hover:border-blue-500 hover:shadow-md transition-all h-full flex flex-col items-center justify-center">
-                    <span className="text-lg font-bold text-slate-800 group-hover:text-blue-600">{std.name}</span>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">உங்கள் வகுப்பை தேர்வு செய்யுங்கள்</h2>
+              <p className="text-slate-500 max-w-2xl mx-auto">1 முதல் 12 ஆம் வகுப்பு வரையிலான அனைத்து பாடப்புத்தகங்கள் மற்றும் வினாத்தாள்களை வகுப்புகள் வாரியாக தேடுங்கள்.</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+              {standardCards.map((std: any) => {
+                const isHighDemand = std.display_order >= 9;
+                return (
+                  <Link href={`/${std.slug}`} key={std.slug} className="group block">
+                    <div className={`bg-white rounded-2xl p-6 text-center shadow-sm border transition-all h-full flex flex-col items-center justify-center relative overflow-hidden ${isHighDemand ? 'border-blue-200 hover:border-blue-500 hover:shadow-blue-100' : 'border-slate-200 hover:border-blue-400'}`}>
+                      {isHighDemand && <div className="absolute top-0 right-0 w-12 h-12 bg-blue-50 transform rotate-45 translate-x-6 -translate-y-6 group-hover:bg-blue-100 transition-colors" />}
+                      <span className={`text-4xl md:text-5xl font-black mb-2 ${isHighDemand ? 'text-blue-600' : 'text-slate-700 group-hover:text-blue-600 transition-colors'}`}>
+                        {std.display_order}
+                      </span>
+                      <span className="text-sm md:text-base font-semibold text-slate-600">ஆம் வகுப்பு</span>
+                      <div className="flex gap-2 mt-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Tamil</span>
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">English</span>
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* 4. FEATURED COLLECTIONS */}
+        {collections && collections.length > 0 && (
+          <section>
+            <div className="flex justify-between items-end mb-8">
+              <div>
+                <h2 className="text-3xl font-bold text-slate-900 mb-2">சிறப்பு தொகுப்புகள்</h2>
+                <p className="text-slate-500">பல்வேறு வளங்களை ஒன்றிணைத்த சிறப்பு தொகுப்புகள்.</p>
+              </div>
+              <Link href="/collections" className="hidden md:flex items-center text-blue-600 font-medium hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-full">
+                அனைத்தும் <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {collections.map((col: any) => (
+                <Link href={`/collections/${col.slug}`} key={col.id} className="group">
+                  <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-blue-300 transition-all h-full flex flex-col">
+                    <div className="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 text-blue-600 group-hover:scale-110 transition-transform group-hover:bg-blue-600 group-hover:text-white">
+                      <Grid className="h-6 w-6" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-700 transition-colors">{col.title}</h3>
+                    <p className="text-slate-500 mb-6 line-clamp-3">{col.description}</p>
+                    <div className="mt-auto text-blue-600 font-medium flex items-center group-hover:translate-x-2 transition-transform">
+                      தொகுப்பை பார்க்க <ArrowRight className="h-4 w-4 ml-2" />
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -113,178 +153,63 @@ export default async function HomePage() {
           </section>
         )}
 
-        {studyGuides && studyGuides.length > 0 && (
-          <section>
-            <div className="flex justify-between items-end mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Study Guides & Notes</h2>
-              <Link href="/study-guides" className="text-blue-600 hover:underline text-sm font-medium flex items-center">
-                View All <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {studyGuides.map((res: any) => <ResourceCard key={res.id} resource={res} />)}
-            </div>
-          </section>
-        )}
-
-        {questionPapers && questionPapers.length > 0 && (
-          <section>
-            <div className="flex justify-between items-end mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Latest Question Papers</h2>
-              <Link href="/question-papers" className="text-blue-600 hover:underline text-sm font-medium flex items-center">
-                View All <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {questionPapers.map((qp: any) => (
-                <Card key={qp.id} className="hover:shadow-md transition-shadow group h-full flex flex-col">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-green-600 bg-green-50 px-2 py-0.5 rounded">
-                        Question Paper
-                      </span>
-                    </div>
-                    <CardTitle className="text-base leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      <Link href={`/question-papers/${qp.slug}`} className="before:absolute before:inset-0">
-                        {qp.title}
-                      </Link>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="mt-auto">
-                    <p className="text-sm text-slate-500 line-clamp-2">{qp.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <AdSlot location="homepage_mid" className="my-8" />
-
-        {textbooks && textbooks.length > 0 && (
-          <section>
-            <div className="flex justify-between items-end mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Textbooks</h2>
-              <Link href="/textbooks" className="text-blue-600 hover:underline text-sm font-medium flex items-center">
-                View All <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {textbooks.map((res: any) => <ResourceCard key={res.id} resource={res} />)}
-            </div>
-          </section>
-        )}
-
-        {collections && collections.length > 0 && (
-          <section className="bg-slate-50 -mx-4 px-4 py-12 border-y">
-            <div className="max-w-6xl mx-auto">
-              <div className="flex justify-between items-end mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Featured Collections</h2>
-              </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {collections.map((col: any) => (
-                  <Link href={`/collections/${col.slug}`} key={col.id} className="group">
-                    <Card className="h-full hover:border-blue-300 hover:shadow-md transition-all bg-white">
-                      <CardHeader>
-                        <CardTitle className="text-lg group-hover:text-blue-600">{col.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-slate-500 line-clamp-2">{col.description}</p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        <div className="grid lg:grid-cols-2 gap-12">
-          {latestResources && latestResources.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <FileText className="h-5 w-5 text-blue-600" /> Latest Additions
+        {/* 5. SPLIT VIEW: LATEST & POPULAR */}
+        <section className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+          {/* POPULAR */}
+          <div>
+            <div className="flex justify-between items-center border-b-2 border-slate-200 pb-4 mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                <div className="p-2 bg-rose-100 text-rose-600 rounded-lg"><TrendingUp className="h-5 w-5" /></div>
+                அதிகம் பார்க்கப்பட்டவை
               </h2>
-              <div className="space-y-3">
-                {latestResources.map((res: any) => (
-                  <div key={res.id} className="flex gap-4 items-center p-3 bg-white rounded-lg border hover:shadow-sm transition-shadow group relative">
-                    <div className="flex-1 min-w-0">
-                      <Link href={`/resources/${res.slug}`} className="before:absolute before:inset-0 font-medium text-slate-900 group-hover:text-blue-600 truncate block">
-                        {res.title}
-                      </Link>
-                      <p className="text-xs text-slate-500 truncate mt-1">
-                        {res.standards?.name} • {res.subjects?.name}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {popularResources && popularResources.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <Download className="h-5 w-5 text-blue-600" /> Most Popular
-              </h2>
-              <div className="space-y-3">
-                {popularResources.map((res: any) => (
-                  <div key={res.id} className="flex gap-4 items-center p-3 bg-white rounded-lg border hover:shadow-sm transition-shadow group relative">
-                    <div className="flex-1 min-w-0">
-                      <Link href={`/resources/${res.slug}`} className="before:absolute before:inset-0 font-medium text-slate-900 group-hover:text-blue-600 truncate block">
-                        {res.title}
-                      </Link>
-                      <p className="text-xs text-slate-500 truncate mt-1">
-                        {res.standards?.name} • {res.subjects?.name}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-        </div>
-
-        {latestArticles && latestArticles.length > 0 && (
-          <section>
-            <div className="flex justify-between items-end mb-6">
-              <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                <Newspaper className="h-6 w-6 text-blue-600" /> Educational News & Articles
-              </h2>
-              <Link href="/articles" className="text-blue-600 hover:underline text-sm font-medium flex items-center">
-                View All <ArrowRight className="h-4 w-4 ml-1" />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {popularResources?.map((res: any) => <ResourceCard key={res.id} resource={res} />)}
+            </div>
+            <div className="mt-6 text-center">
+              <Link href="/resources" className="text-blue-600 font-medium hover:underline flex items-center justify-center gap-2">
+                View All Popular <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {latestArticles.map((article: any) => (
-                <Card key={article.id} className="hover:shadow-md transition-shadow group h-full flex flex-col">
-                  <CardHeader>
-                    <CardTitle className="text-lg leading-snug group-hover:text-blue-600 transition-colors">
-                      <Link href={`/articles/${article.slug}`} className="before:absolute before:inset-0">
-                        {article.title}
-                      </Link>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="mt-auto">
-                    <p className="text-sm text-slate-500 line-clamp-3">{article.excerpt}</p>
-                  </CardContent>
-                </Card>
-              ))}
+          </div>
+
+          {/* LATEST */}
+          <div>
+            <div className="flex justify-between items-center border-b-2 border-slate-200 pb-4 mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><BookOpen className="h-5 w-5" /></div>
+                புதிய வளங்கள்
+              </h2>
             </div>
-          </section>
-        )}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {latestResources?.map((res: any) => <ResourceCard key={res.id} resource={res} />)}
+            </div>
+            <div className="mt-6 text-center">
+              <Link href="/resources" className="text-blue-600 font-medium hover:underline flex items-center justify-center gap-2">
+                View All Latest <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. COMMUNITY ACQUISITION (CORE) */}
+        <section className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-8 md:p-16 text-center text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10 pointer-events-none">
+            <Compass className="absolute -top-10 -left-10 w-64 h-64" />
+            <BookOpen className="absolute -bottom-10 -right-10 w-64 h-64" />
+          </div>
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">TamilEduHub சமூகத்துடன் இணைந்திருங்கள்</h2>
+            <p className="text-lg md:text-xl text-blue-100 mb-10 leading-relaxed">
+              புதிய கல்வி வளங்கள், Question Papers, மற்றும் Study Materials பற்றிய உடனடி தகவல்களை பெற எங்கள் சமூகத்தில் இணையுங்கள்.
+            </p>
+            <div className="bg-white/10 p-6 md:p-8 rounded-2xl backdrop-blur-md border border-white/20">
+              <CommunityLinksWrapper location="homepage_bottom" compact={false} />
+            </div>
+          </div>
+        </section>
 
       </main>
-
-      <section className="bg-slate-900 py-16 text-center px-4">
-        <h2 className="text-3xl font-bold text-white mb-6">Join Our Community</h2>
-        <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
-          Get instant updates on new study materials, question papers, and educational news.
-        </p>
-        <div className="max-w-xl mx-auto">
-          <CommunityLinksWrapper location="homepage_bottom" compact={false} />
-        </div>
-      </section>
     </div>
   )
 }

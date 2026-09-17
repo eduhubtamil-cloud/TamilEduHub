@@ -4,9 +4,10 @@ import { CommunityCTA } from './CommunityCTA'
 interface CommunityLinksWrapperProps {
   location: string
   compact?: boolean
+  variant?: 'default' | 'compact' | 'icon'
 }
 
-export async function CommunityLinksWrapper({ location, compact = false }: CommunityLinksWrapperProps) {
+export async function CommunityLinksWrapper({ location, compact = false, variant = 'default' }: CommunityLinksWrapperProps) {
   const supabase = await createClient()
   
   const { data } = await (supabase.from('community_links') as any)
@@ -18,5 +19,5 @@ export async function CommunityLinksWrapper({ location, compact = false }: Commu
   
   if (links.length === 0) return null
 
-  return <CommunityCTA links={links} location={location} compact={compact} />
+  return <CommunityCTA links={links} location={location} compact={compact} variant={variant} />
 }
