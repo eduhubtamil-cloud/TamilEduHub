@@ -43,29 +43,35 @@ export default async function HomePage() {
     <div className="flex flex-col min-h-screen bg-slate-50">
       
       {/* 1. HERO SECTION */}
-      <section className="bg-gradient-to-b from-blue-900 to-slate-900 text-white pt-24 pb-28 md:pb-32 px-4 text-center relative overflow-hidden flex flex-col items-center justify-center">
-        {/* Background ambient blurs */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-          <div className="absolute top-1/4 left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/3 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+      <section className="relative pt-24 pb-32 md:pb-40 px-4 text-center overflow-hidden flex flex-col items-center justify-center bg-[#0B0F19]">
+        
+        {/* Animated Aurora / Glow Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-600/20 blur-[120px] mix-blend-screen"></div>
+          <div className="absolute top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-purple-600/20 blur-[120px] mix-blend-screen"></div>
+          <div className="absolute -bottom-[20%] left-[20%] w-[50%] h-[50%] rounded-full bg-emerald-600/10 blur-[120px] mix-blend-screen"></div>
+          
+          {/* Subtle Grid Pattern Overlay */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
         </div>
 
-        {/* Floating Decorative Banners (Desktop Only) */}
-        <div className="absolute top-1/2 left-0 w-full h-full pointer-events-none z-0 hidden lg:block -translate-y-1/2 max-w-[1400px]">
-          {/* Left Floating Banner */}
-          <div className="absolute left-10 top-[20%] animate-bounce [animation-duration:4s] bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl flex items-center gap-4 text-left shadow-2xl">
-            <div className="bg-[#25D366] text-white p-3 rounded-full">
+        {/* Floating Decorative Banners (Large Desktop Only) - Fixed Overlap */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1400px] h-[600px] pointer-events-none z-0 hidden xl:block">
+          
+          {/* Top Left */}
+          <div className="absolute left-4 top-10 animate-bounce [animation-duration:5s] bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center gap-4 text-left shadow-2xl">
+            <div className="bg-[#25D366]/20 text-[#25D366] p-3 rounded-full border border-[#25D366]/30">
               <MessageCircle className="h-6 w-6" />
             </div>
             <div>
               <p className="font-bold text-white text-sm">Join WhatsApp</p>
-              <p className="text-blue-200 text-xs">10,000+ Students</p>
+              <p className="text-slate-400 text-xs">10,000+ Students</p>
             </div>
           </div>
           
-          {/* Left Bottom Floating Banner */}
-          <div className="absolute left-24 bottom-[30%] animate-bounce [animation-duration:5s] [animation-delay:1s] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl flex items-center gap-3 text-left shadow-2xl">
-            <div className="bg-amber-500 text-white p-2 rounded-full">
+          {/* Bottom Left */}
+          <div className="absolute left-16 bottom-16 animate-bounce [animation-duration:6s] [animation-delay:1s] bg-white/5 backdrop-blur-xl border border-white/10 p-3 rounded-2xl flex items-center gap-3 text-left shadow-2xl">
+            <div className="bg-amber-500/20 text-amber-500 p-2 rounded-full border border-amber-500/30">
               <BookOpen className="h-4 w-4" />
             </div>
             <div>
@@ -73,20 +79,20 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Right Floating Banner */}
-          <div className="absolute right-10 top-[30%] animate-bounce [animation-duration:4.5s] [animation-delay:0.5s] bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl flex items-center gap-4 text-left shadow-2xl">
-            <div className="bg-[#0088cc] text-white p-3 rounded-full">
+          {/* Top Right */}
+          <div className="absolute right-4 top-20 animate-bounce [animation-duration:5.5s] [animation-delay:0.5s] bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center gap-4 text-left shadow-2xl">
+            <div className="bg-[#0088cc]/20 text-[#0088cc] p-3 rounded-full border border-[#0088cc]/30">
               <Send className="h-6 w-6" />
             </div>
             <div>
               <p className="font-bold text-white text-sm">Telegram Group</p>
-              <p className="text-blue-200 text-xs">Daily Updates</p>
+              <p className="text-slate-400 text-xs">Daily Updates</p>
             </div>
           </div>
 
-          {/* Right Bottom Floating Banner */}
-          <div className="absolute right-24 bottom-[20%] animate-bounce [animation-duration:4s] [animation-delay:1.5s] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl flex items-center gap-3 text-left shadow-2xl">
-            <div className="bg-emerald-500 text-white p-2 rounded-full">
+          {/* Bottom Right */}
+          <div className="absolute right-16 bottom-24 animate-bounce [animation-duration:5s] [animation-delay:1.5s] bg-white/5 backdrop-blur-xl border border-white/10 p-3 rounded-2xl flex items-center gap-3 text-left shadow-2xl">
+            <div className="bg-emerald-500/20 text-emerald-500 p-2 rounded-full border border-emerald-500/30">
               <FileText className="h-4 w-4" />
             </div>
             <div>
@@ -96,26 +102,35 @@ export default async function HomePage() {
         </div>
 
         <div className="max-w-4xl mx-auto relative z-10 w-full">
-          <span className="inline-block py-1.5 px-4 rounded-full bg-blue-800/50 text-blue-200 text-sm font-medium mb-8 border border-blue-700/50 backdrop-blur-sm shadow-inner">
-            {dict.heroPill}
-          </span>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.15]">
+          {/* Premium Pill */}
+          <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl mb-8">
+            <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+            <span className="text-blue-200 text-sm font-semibold tracking-wide uppercase">
+              {dict.heroPill}
+            </span>
+          </div>
+
+          {/* Gradient Text Title */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.15] text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-slate-300 drop-shadow-sm">
             {dict.heroTitle1}<br className="hidden md:block" /> {dict.heroTitle2}
           </h1>
-          <p className="text-lg md:text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed font-medium">
+          
+          <p className="text-lg md:text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
             {dict.heroDescription}
           </p>
           
-          <form action="/search" method="GET" className="max-w-3xl mx-auto relative flex items-center shadow-2xl group w-full px-4 md:px-0">
-            <Search className="absolute left-8 md:left-6 h-5 w-5 md:h-6 md:w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+          {/* Premium Search Bar */}
+          <form action="/search" method="GET" className="max-w-3xl mx-auto relative flex items-center group w-full px-4 md:px-0">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-xl opacity-20 group-focus-within:opacity-40 transition-opacity duration-500"></div>
+            <Search className="absolute left-8 md:left-6 h-5 w-5 md:h-6 md:w-6 text-slate-400 group-focus-within:text-blue-500 transition-colors z-10" />
             <input 
               type="search" 
               name="q" 
               placeholder={dict.searchPlaceholder}
-              className="w-full h-14 md:h-20 pl-14 md:pl-16 pr-24 md:pr-40 rounded-xl md:rounded-2xl text-slate-900 text-base md:text-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all border-none shadow-inner"
+              className="w-full h-14 md:h-20 pl-14 md:pl-16 pr-24 md:pr-40 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 text-base md:text-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/10 backdrop-blur-xl transition-all shadow-2xl relative z-0"
               required
             />
-            <Button type="submit" size="lg" className="absolute right-6 md:right-3 h-10 md:h-14 px-4 md:px-8 rounded-lg md:rounded-xl bg-blue-600 hover:bg-blue-700 text-sm md:text-lg font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+            <Button type="submit" size="lg" className="absolute right-6 md:right-3 h-10 md:h-14 px-4 md:px-8 rounded-lg md:rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm md:text-lg font-bold transition-all shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 z-10 border border-blue-500/50">
               {dict.searchButton}
             </Button>
           </form>
