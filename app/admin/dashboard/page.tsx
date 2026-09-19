@@ -154,9 +154,13 @@ export default async function AdminDashboardPage() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <a href="/admin/resources/bulk" className="flex items-center p-3 text-slate-700 hover:bg-slate-50 rounded-md border border-slate-200 transition-colors text-sm font-medium">
+                <FolderOpen className="h-4 w-4 mr-3 text-blue-600" />
+                Bulk Upload PDFs
+              </a>
               <a href="/admin/resources/create" className="flex items-center p-3 text-slate-700 hover:bg-slate-50 rounded-md border border-slate-200 transition-colors text-sm font-medium">
                 <FolderOpen className="h-4 w-4 mr-3 text-blue-600" />
-                Upload Resource
+                Upload Single Resource
               </a>
               <a href="/admin/question-papers/create" className="flex items-center p-3 text-slate-700 hover:bg-slate-50 rounded-md border border-slate-200 transition-colors text-sm font-medium">
                 <FileQuestion className="h-4 w-4 mr-3 text-purple-600" />
