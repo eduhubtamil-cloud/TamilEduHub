@@ -7,11 +7,25 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const notoSansTamil = Noto_Sans_Tamil({ subsets: ['tamil'], variable: '--font-noto-tamil', weight: ['400', '500', '600', '700'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'),
   title: {
     template: '%s | TamilEduHub',
     default: 'TamilEduHub - Educational Resources',
   },
-  description: 'Download study materials, question papers, and educational resources.',
+  description: 'Download study materials, question papers, and educational resources for Tamil Nadu State Board.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: '/',
+    siteName: 'TamilEduHub',
+    title: 'TamilEduHub - Educational Resources',
+    description: 'Download study materials, question papers, and educational resources for Tamil Nadu State Board.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TamilEduHub - Educational Resources',
+    description: 'Download study materials, question papers, and educational resources for Tamil Nadu State Board.',
+  },
 }
 
 import { getLanguage } from '@/lib/i18n'

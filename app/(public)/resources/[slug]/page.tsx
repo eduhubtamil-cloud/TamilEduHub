@@ -16,19 +16,34 @@ import { ResourceCard } from '@/components/ui/ResourceCard'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const supabase = await createClient();
-  const dict = await getDictionary();;
+  const supabase = await createClient()
 
   const { data } = await supabase.from('resources').select('title, description, canonical_url, seo_title, seo_description').eq('slug', slug).single()
   const resource = data as any
   
   if (!resource) return { title: 'Resource Not Found' }
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  
+  const title = resource.seo_title || `${resource.title} - TamilEduHub`
+  const description = resource.seo_description || resource.description || `Download ${resource.title}`
+  const url = resource.canonical_url || `${siteUrl}/resources/${slug}`
+
   return {
-    title: resource.seo_title || `${resource.title} - TamilEduHub`,
-    description: resource.seo_description || resource.description || `Download ${resource.title}`,
+    title,
+    description,
     alternates: {
-      canonical: resource.canonical_url || `${siteUrl}/resources/${slug}`
+      canonical: url
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
     }
   }
 }

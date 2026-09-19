@@ -10,13 +10,34 @@ import { CommentsSection } from '@/components/ui/CommentsSection'
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const supabase = await createClient()
+
   const { data } = await supabase.from('articles').select('title, excerpt').eq('slug', slug).single()
   const article = data as any
   
   if (!article) return { title: 'Article Not Found' }
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  
+  const title = `${article.title} - TamilEduHub`
+  const description = article.excerpt || `Read ${article.title}`
+  const url = `${siteUrl}/articles/${slug}`
+
   return {
-    title: `${article.title} - TamilEduHub`,
-    description: article.excerpt || `Read ${article.title}`,
+    title,
+    description,
+    alternates: {
+      canonical: url
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    }
   }
 }
 

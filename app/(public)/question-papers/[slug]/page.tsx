@@ -12,13 +12,34 @@ import { Download, FileText, Calendar, BookOpen, CheckCircle } from 'lucide-reac
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const supabase = await createClient()
+
   const { data } = await supabase.from('question_papers').select('title, description').eq('slug', slug).single()
   const paper = data as any
   
   if (!paper) return { title: 'Question Paper Not Found' }
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  
+  const title = `${paper.title} - TamilEduHub`
+  const description = paper.description || `Download ${paper.title}`
+  const url = `${siteUrl}/question-papers/${slug}`
+
   return {
-    title: `${paper.title} - TamilEduHub`,
-    description: paper.description || `Download ${paper.title}`,
+    title,
+    description,
+    alternates: {
+      canonical: url
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    }
   }
 }
 
