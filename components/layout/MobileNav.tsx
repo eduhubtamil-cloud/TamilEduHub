@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, BookOpen, Search, FileText, Download, TrendingUp, LogIn, User, LogOut } from 'lucide-react'
+import { Menu, X, BookOpen, Search, FileText, Download, TrendingUp, LogIn, User, LogOut, Bookmark } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { signout } from '@/app/auth/actions'
@@ -120,11 +120,17 @@ export function MobileNav({ dict, profile, currentLang, children }: MobileNavPro
                     </div>
                     <div className="flex flex-col overflow-hidden">
                       <span className="text-sm font-medium text-slate-900 truncate">{profile.full_name}</span>
-                      <span className="text-xs text-slate-500">View Profile</span>
+                      <span className="text-xs text-slate-500">{dict.accountSettings || 'Account Settings'}</span>
                     </div>
                   </Link>
+                  <Button variant="outline" className="w-full justify-start text-slate-700 font-medium bg-white" asChild>
+                    <Link href="/account/bookmarks" onClick={() => setIsOpen(false)}>
+                      <Bookmark className="h-4 w-4 mr-2 text-slate-400" />
+                      {dict.myBookmarks || 'My Bookmarks'}
+                    </Link>
+                  </Button>
                   <form action={signout} className="w-full">
-                    <Button variant="outline" type="submit" className="w-full justify-start text-slate-600 font-medium">
+                    <Button variant="ghost" type="submit" className="w-full justify-start text-slate-600 hover:text-red-600 hover:bg-red-50 font-medium">
                       <LogOut className="h-4 w-4 mr-2" />
                       {dict.logout}
                     </Button>

@@ -102,4 +102,8 @@ export const en = {
   pageNotFound: "This page could not be found.",
   goHome: "Go back home",
   continueWithGoogle: "Continue with Google",
+
+  // Dashboard
+  myBookmarks: "My Bookmarks",
+  accountSettings: "Account Settings",
 }

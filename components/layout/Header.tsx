@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Search as SearchIcon, User } from 'lucide-react'
+import { BookOpen, Search as SearchIcon, User, Bookmark } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
 
 import { getDictionary, getLanguage } from '@/lib/i18n'
@@ -65,20 +65,25 @@ export async function Header() {
           <div className="hidden md:block w-px h-5 bg-slate-200" aria-hidden="true"></div>
 
           {user ? (
-            <div className="hidden sm:flex items-center gap-2 shrink-0 bg-white border border-slate-200 hover:border-slate-300 transition-colors rounded-full pl-1 pr-3 py-1">
-              <Link href="/account/profile" className="flex h-7 w-7 rounded-full bg-slate-100 overflow-hidden items-center justify-center" aria-label={dict.myProfile}>
-                {profile?.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  <User className="h-4 w-4 text-slate-500" />
-                )}
+            <div className="hidden sm:flex items-center gap-4 shrink-0">
+              <Link href="/account/bookmarks" className="text-slate-500 hover:text-blue-600 transition-colors" aria-label={dict.myBookmarks || 'My Bookmarks'}>
+                <Bookmark className="h-5 w-5" />
               </Link>
-              <form action={signout} className="flex items-center">
-                <button type="submit" className="text-[13px] font-medium text-slate-700 hover:text-slate-900 flex items-center gap-1.5 transition-colors" aria-label={dict.logout}>
-                  {dict.logout}
-                </button>
-              </form>
+              <div className="flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 transition-colors rounded-full pl-1 pr-3 py-1">
+                <Link href="/account/profile" className="flex h-7 w-7 rounded-full bg-slate-100 overflow-hidden items-center justify-center" aria-label={dict.myProfile}>
+                  {profile?.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <User className="h-4 w-4 text-slate-500" />
+                  )}
+                </Link>
+                <form action={signout} className="flex items-center">
+                  <button type="submit" className="text-[13px] font-medium text-slate-700 hover:text-slate-900 flex items-center gap-1.5 transition-colors" aria-label={dict.logout}>
+                    {dict.logout}
+                  </button>
+                </form>
+              </div>
             </div>
           ) : (
             <div className="hidden sm:flex items-center gap-2 shrink-0">

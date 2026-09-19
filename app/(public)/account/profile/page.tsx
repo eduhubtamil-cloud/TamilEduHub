@@ -1,12 +1,13 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { signout } from '@/app/auth/actions'
 import { updateProfile, updatePassword } from './actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
-import { User, LogOut, Camera, KeyRound } from 'lucide-react'
+import { Camera, KeyRound } from 'lucide-react'
+import { AccountSidebar } from '@/components/layout/AccountSidebar'
+import { getDictionary } from '@/lib/i18n'
 
 export const metadata = {
   title: 'My Profile - TamilEduHub',
@@ -15,6 +16,7 @@ export const metadata = {
 export default async function ProfilePage() {
   const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
+  const dict = await getDictionary()
 
   if (error || !user) {
     redirect('/account/login')
@@ -30,36 +32,16 @@ export default async function ProfilePage() {
   const profile = data as any
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
+    <div className="container mx-auto px-4 py-12 max-w-5xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Account Settings</h1>
+        <h1 className="text-3xl font-bold text-slate-900">{dict.accountSettings || 'Account Settings'}</h1>
         <p className="text-slate-500">Manage your profile, avatar, and security preferences.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
         
         {/* Sidebar */}
-        <aside className="w-full md:w-64 shrink-0 space-y-4">
-          <Card className="bg-slate-50 border-slate-200">
-            <CardContent className="p-6 text-center">
-              <div className="mx-auto h-24 w-24 rounded-full bg-slate-200 mb-4 overflow-hidden border-4 border-white shadow-sm flex items-center justify-center">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
-                ) : (
-                  <User className="h-10 w-10 text-slate-400" />
-                )}
-              </div>
-              <h3 className="font-semibold text-slate-900">{profile?.full_name || 'Student'}</h3>
-              <p className="text-sm text-slate-500 truncate" title={user.email}>{user.email}</p>
-            </CardContent>
-          </Card>
-
-          <form action={signout}>
-            <Button variant="outline" className="w-full text-slate-700 hover:text-red-600 hover:bg-red-50 hover:border-red-200 gap-2" type="submit">
-              <LogOut className="h-4 w-4" /> Log out
-            </Button>
-          </form>
-        </aside>
+        <AccountSidebar profile={profile} user={user} dict={dict} />
 
         {/* Main Content */}
         <div className="flex-1 space-y-8">

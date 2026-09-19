@@ -102,4 +102,8 @@ export const ta = {
   pageNotFound: "இந்தப் பக்கம் கிடைக்கவில்லை.",
   goHome: "முகப்புப் பக்கத்திற்குச் செல்ல",
   continueWithGoogle: "Google மூலம் தொடரவும்",
+
+  // Dashboard
+  myBookmarks: "எனது சேமிப்புகள்",
+  accountSettings: "கணக்கு அமைப்புகள்",
 }
