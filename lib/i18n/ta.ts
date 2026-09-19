@@ -68,13 +68,19 @@ export const ta = {
 
   // Community CTA
   joinOurCommunity: "எங்கள் சமூகத்தில் இணையுங்கள்",
-  joinOurCommunityDesc: "புதிய கல்வி வளங்கள், படிப்பு வளங்கள் மற்றும் கல்வி அறிவிப்புகளை உடனுக்குடன் பெற எங்கள் சமூகத்தில் இணையுங்கள்.",
-  joinWhatsApp: "WhatsApp சேனலில் இணையுங்கள்",
-  joinTelegram: "Telegram சமூகத்தில் இணையுங்கள்",
-  googlePlay: "Google Play-ல் பெறுங்கள்",
-  whatsappDesc: "தினசரி கல்வி அப்டேட்களை WhatsApp-ல் பெறலாம்.",
+  joinOurCommunityDesc: "புதிய வளங்கள், ஆய்வுப் பொருட்கள் மற்றும் கல்வி அறிவிப்புகளுடன் புதுப்பித்த நிலையில் இருங்கள். இன்றே எங்கள் சமூகத்தில் சேரவும்.",
+  joinWhatsApp: "WhatsApp சேனலில் சேர",
+  joinTelegram: "Telegram சமூகத்தில் சேர",
+  googlePlay: "Google Play இல் பதிவிறக்கவும்",
+  whatsappDesc: "வாட்ஸ்அப்பில் தினசரி கல்வி அறிவிப்புகளைப் பெறுங்கள்.",
   telegramDesc: "ஆயிரக்கணக்கான மாணவர்கள் மற்றும் ஆசிரியர்களுடன் இணையுங்கள்.",
-  googlePlayDesc: "எங்கள் அதிகாரப்பூர்வ Android செயலியை பதிவிறக்கம் செய்யுங்கள்.",
+  googlePlayDesc: "எங்கள் அதிகாரப்பூர்வ Android பயன்பாட்டைப் பதிவிறக்கவும்.",
+
+  // Custom Banners
+  teachersBannerTitle: "நீங்கள் ஆசிரியரா?",
+  teachersBannerDesc: "ஆசிரியர்களுக்கான பிரத்யேக WhatsApp மற்றும் Telegram குழுக்களில் இணைந்து கல்வி வளங்களை பகிருங்கள்.",
+  studentsBannerTitle: "நீங்கள் மாணவரா?",
+  studentsBannerDesc: "தினசரி கல்வி வளங்கள், தேர்வு குறிப்புகள் பெற எங்கள் மாணவர் சமூகத்தில் இணையுங்கள்.",
 
   // Footer
   footerDesc: "தமிழ்நாடு மாணவர்களுக்கான முழுமையான கல்வி வளங்கள். பாடப்புத்தகங்கள், Study Materials, Question Papers, Notes மற்றும் PDF வளங்களை ஒரே இடத்தில் எளிதாக அணுகுங்கள்.",

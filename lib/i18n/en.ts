@@ -75,6 +75,12 @@ export const en = {
   whatsappDesc: "Get daily educational updates directly on WhatsApp.",
   telegramDesc: "Connect with thousands of students and teachers.",
   googlePlayDesc: "Download our official Android app.",
+  
+  // Custom Banners
+  teachersBannerTitle: "Are you a Teacher?",
+  teachersBannerDesc: "Join our exclusive WhatsApp and Telegram groups for teachers to share materials and collaborate.",
+  studentsBannerTitle: "Are you a Student?",
+  studentsBannerDesc: "Join our student community for daily study materials, exam tips, and question papers.",
 
   // Footer
   footerDesc: "Complete educational resources for Tamil Nadu students. Access textbooks, study materials, question papers, notes, and PDF resources easily in one place.",

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Search, BookOpen, FileText, Download, TrendingUp, Compass, Grid, FileQuestion, BookMarked, GraduationCap, ArrowRight } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
+import { RoleBannersWrapper } from '@/components/ui/RoleBannersWrapper'
 import { ResourceCard } from '@/components/ui/ResourceCard'
 import { getDictionary } from '@/lib/i18n'
 
@@ -94,6 +95,9 @@ export default async function HomePage() {
 
       <main className="flex-1 container mx-auto px-4 py-16 max-w-7xl space-y-24">
         
+        {/* 2.5 CUSTOM ROLE BANNERS */}
+        <RoleBannersWrapper />
+
         {/* 3. STANDARD SELECTOR */}
         {standardCards.length > 0 && (
           <section>
