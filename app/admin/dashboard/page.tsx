@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileText, FolderOpen, Download, Users, FileQuestion, Newspaper } from 'lucide-react'
+import { AnalyticsChart } from '@/components/admin/AnalyticsChart'
 
 export const metadata = {
   title: 'Admin Dashboard - TamilEduHub',
@@ -94,6 +95,10 @@ export default async function AdminDashboardPage() {
             <h3 className="text-2xl font-bold text-slate-900 mt-2">{usersCount || 0}</h3>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="mb-8 h-[400px]">
+        <AnalyticsChart />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
