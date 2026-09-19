@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Search, BookOpen, FileText, Download, TrendingUp, Compass, Grid, FileQuestion, BookMarked, GraduationCap, ArrowRight } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
 import { RoleBannersWrapper } from '@/components/ui/RoleBannersWrapper'
+import { FeaturesBanner } from '@/components/ui/FeaturesBanner'
 import { ResourceCard } from '@/components/ui/ResourceCard'
 import { getDictionary } from '@/lib/i18n'
 
@@ -197,6 +198,8 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        <FeaturesBanner dict={dict} />
 
         {/* 6. COMMUNITY ACQUISITION (CORE) */}
         <div className="max-w-[1100px] mx-auto w-full px-4 mb-16">

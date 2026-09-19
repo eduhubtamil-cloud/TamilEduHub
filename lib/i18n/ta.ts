@@ -82,6 +82,18 @@ export const ta = {
   studentsBannerTitle: "நீங்கள் மாணவரா?",
   studentsBannerDesc: "தினசரி கல்வி வளங்கள், தேர்வு குறிப்புகள் பெற எங்கள் மாணவர் சமூகத்தில் இணையுங்கள்.",
 
+  // Why Choose Us
+  whyChooseUs: "ஏன் TamilEduHub?",
+  whyChooseUsDesc: "தமிழ்நாடு மாணவர்களுக்கு சிறந்த கல்வி அனுபவத்தை வழங்குவதில் நாங்கள் அர்ப்பணிப்புடன் உள்ளோம்.",
+  featureBilingualTitle: "இருமொழி ஆதரவு",
+  featureBilingualDesc: "அனைத்து வளங்களும் தமிழ் மற்றும் ஆங்கில வழிகளில் கிடைக்கின்றன.",
+  featureQualityTitle: "உயர்தர உள்ளடக்கம்",
+  featureQualityDesc: "அனுபவமிக்க அரசு ஆசிரியர்களால் சரிபார்க்கப்பட்ட மற்றும் பகிரப்பட்ட பொருட்கள்.",
+  featureFastTitle: "வேகமான & இலவசம்",
+  featureFastDesc: "எந்த மறைமுக கட்டணமுமின்றி மின்னல் வேகத்தில் நேரடி PDF பதிவிறக்கங்கள்.",
+  featureUpdatedTitle: "எப்போதும் புதுப்பிக்கப்பட்டது",
+  featureUpdatedDesc: "சமீபத்திய வினாத்தாள்கள் மற்றும் பாடத்திட்ட புதுப்பிப்புகளை உடனுக்குடன் பெறுங்கள்.",
+
   // Footer
   footerDesc: "தமிழ்நாடு மாணவர்களுக்கான முழுமையான கல்வி வளங்கள். பாடப்புத்தகங்கள், Study Materials, Question Papers, Notes மற்றும் PDF வளங்களை ஒரே இடத்தில் எளிதாக அணுகுங்கள்.",
   footerConnect: "சமூகத்துடன் இணையுங்கள் (Join Us)",

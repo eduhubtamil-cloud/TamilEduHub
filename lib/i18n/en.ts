@@ -81,6 +81,18 @@ export const en = {
   teachersBannerDesc: "Join our exclusive WhatsApp and Telegram groups for teachers to share materials and collaborate.",
   studentsBannerTitle: "Are you a Student?",
   studentsBannerDesc: "Join our student community for daily study materials, exam tips, and question papers.",
+  
+  // Why Choose Us
+  whyChooseUs: "Why Choose TamilEduHub?",
+  whyChooseUsDesc: "We are dedicated to providing the best educational experience for Tamil Nadu students.",
+  featureBilingualTitle: "Bilingual Support",
+  featureBilingualDesc: "All resources available in both Tamil and English mediums.",
+  featureQualityTitle: "Curated Quality",
+  featureQualityDesc: "Materials verified and shared by experienced government teachers.",
+  featureFastTitle: "Fast & Free",
+  featureFastDesc: "Lightning-fast direct PDF downloads with zero hidden costs.",
+  featureUpdatedTitle: "Always Updated",
+  featureUpdatedDesc: "Get the latest question papers and syllabus updates instantly.",
 
   // Footer
   footerDesc: "Complete educational resources for Tamil Nadu students. Access textbooks, study materials, question papers, notes, and PDF resources easily in one place.",
