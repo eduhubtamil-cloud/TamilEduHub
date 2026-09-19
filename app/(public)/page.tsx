@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
-import { Search, BookOpen, FileText, Download, TrendingUp, Compass, Grid, FileQuestion, BookMarked, GraduationCap, ArrowRight } from 'lucide-react'
+import { Search, BookOpen, FileText, Download, TrendingUp, Compass, Grid, FileQuestion, BookMarked, GraduationCap, ArrowRight, MessageCircle, Send } from 'lucide-react'
 import { CommunityLinksWrapper } from '@/components/ui/CommunityLinksWrapper'
 import { RoleBannersWrapper } from '@/components/ui/RoleBannersWrapper'
 import { FeaturesBanner } from '@/components/ui/FeaturesBanner'
@@ -43,28 +43,79 @@ export default async function HomePage() {
     <div className="flex flex-col min-h-screen bg-slate-50">
       
       {/* 1. HERO SECTION */}
-      <section className="bg-gradient-to-b from-blue-900 to-slate-900 text-white pt-24 pb-20 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <span className="inline-block py-1 px-3 rounded-full bg-blue-800/50 text-blue-200 text-sm font-medium mb-6 border border-blue-700/50 backdrop-blur-sm">
+      <section className="bg-gradient-to-b from-blue-900 to-slate-900 text-white pt-24 pb-28 md:pb-32 px-4 text-center relative overflow-hidden flex flex-col items-center justify-center">
+        {/* Background ambient blurs */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-1/4 left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/3 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Floating Decorative Banners (Desktop Only) */}
+        <div className="absolute top-1/2 left-0 w-full h-full pointer-events-none z-0 hidden lg:block -translate-y-1/2 max-w-[1400px]">
+          {/* Left Floating Banner */}
+          <div className="absolute left-10 top-[20%] animate-bounce [animation-duration:4s] bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl flex items-center gap-4 text-left shadow-2xl">
+            <div className="bg-[#25D366] text-white p-3 rounded-full">
+              <MessageCircle className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm">Join WhatsApp</p>
+              <p className="text-blue-200 text-xs">10,000+ Students</p>
+            </div>
+          </div>
+          
+          {/* Left Bottom Floating Banner */}
+          <div className="absolute left-24 bottom-[30%] animate-bounce [animation-duration:5s] [animation-delay:1s] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl flex items-center gap-3 text-left shadow-2xl">
+            <div className="bg-amber-500 text-white p-2 rounded-full">
+              <BookOpen className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm">Free Materials</p>
+            </div>
+          </div>
+
+          {/* Right Floating Banner */}
+          <div className="absolute right-10 top-[30%] animate-bounce [animation-duration:4.5s] [animation-delay:0.5s] bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl flex items-center gap-4 text-left shadow-2xl">
+            <div className="bg-[#0088cc] text-white p-3 rounded-full">
+              <Send className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm">Telegram Group</p>
+              <p className="text-blue-200 text-xs">Daily Updates</p>
+            </div>
+          </div>
+
+          {/* Right Bottom Floating Banner */}
+          <div className="absolute right-24 bottom-[20%] animate-bounce [animation-duration:4s] [animation-delay:1.5s] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl flex items-center gap-3 text-left shadow-2xl">
+            <div className="bg-emerald-500 text-white p-2 rounded-full">
+              <FileText className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="font-bold text-white text-sm">Verified Papers</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto relative z-10 w-full">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-blue-800/50 text-blue-200 text-sm font-medium mb-8 border border-blue-700/50 backdrop-blur-sm shadow-inner">
             {dict.heroPill}
           </span>
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.15]">
             {dict.heroTitle1}<br className="hidden md:block" /> {dict.heroTitle2}
           </h1>
-          <p className="text-base md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed font-medium">
             {dict.heroDescription}
           </p>
           
-          <form action="/search" method="GET" className="max-w-3xl mx-auto relative flex items-center shadow-2xl group">
-            <Search className="absolute left-4 md:left-5 h-5 w-5 md:h-6 md:w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+          <form action="/search" method="GET" className="max-w-3xl mx-auto relative flex items-center shadow-2xl group w-full px-4 md:px-0">
+            <Search className="absolute left-8 md:left-6 h-5 w-5 md:h-6 md:w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
             <input 
               type="search" 
               name="q" 
               placeholder={dict.searchPlaceholder}
-              className="w-full h-14 md:h-20 pl-10 md:pl-14 pr-24 md:pr-36 rounded-xl md:rounded-2xl text-slate-900 text-base md:text-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all border-none"
+              className="w-full h-14 md:h-20 pl-14 md:pl-16 pr-24 md:pr-40 rounded-xl md:rounded-2xl text-slate-900 text-base md:text-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all border-none shadow-inner"
               required
             />
-            <Button type="submit" size="lg" className="absolute right-1.5 md:right-3 h-11 md:h-14 px-4 md:px-8 rounded-lg md:rounded-xl bg-blue-600 hover:bg-blue-700 text-sm md:text-lg font-semibold transition-all">
+            <Button type="submit" size="lg" className="absolute right-6 md:right-3 h-10 md:h-14 px-4 md:px-8 rounded-lg md:rounded-xl bg-blue-600 hover:bg-blue-700 text-sm md:text-lg font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
               {dict.searchButton}
             </Button>
           </form>
