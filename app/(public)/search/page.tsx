@@ -50,7 +50,6 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
   if (hasFilters) {
     let selectString = `
       id, title, slug, description, file_size, year, created_at, views_count,
-      education_segments${segment ? '!inner' : ''}(name, slug),
       standards${standard ? '!inner' : ''}(name, slug),
       subjects${subject ? '!inner' : ''}(name, slug),
       exam_types${examType ? '!inner' : ''}(name, slug),
@@ -65,7 +64,8 @@ export default async function SearchPage(props: { searchParams: Promise<{ [key: 
     if (query) {
       dbQuery = dbQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%`)
     }
-    if (segment) dbQuery = dbQuery.eq('education_segments.slug', segment)
+    if (segment === 'school') dbQuery = dbQuery.not('standard_id', 'is', null)
+    if (segment === 'competitive-exams') dbQuery = dbQuery.not('exam_type_id', 'is', null)
     if (standard && segment === 'school') dbQuery = dbQuery.eq('standards.slug', standard)
     if (examType && segment === 'competitive-exams') dbQuery = dbQuery.eq('exam_types.slug', examType)
     if (subject) dbQuery = dbQuery.eq('subjects.slug', subject)

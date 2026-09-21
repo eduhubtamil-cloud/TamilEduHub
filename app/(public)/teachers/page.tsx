@@ -16,11 +16,9 @@ export default async function TeachersPage() {
     .select(`
       id, title, slug, description, file_url, created_at, status, year,
       standards(name, slug),
-      subjects(name, slug),
-      education_segments!inner(slug)
+      subjects(name, slug)
     `)
     .eq('status', 'published')
-    .eq('education_segments.slug', 'teachers')
     .limit(20)
     .order('created_at', { ascending: false })
 

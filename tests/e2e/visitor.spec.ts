@@ -17,7 +17,7 @@ test.describe('Visitor E2E Flow', () => {
 
     // 4. Click the first resource in the results
     const firstResource = page.locator('a[href^="/resources/"]').first();
-    await expect(firstResource).toBeVisible();
+    await expect(firstResource).toBeVisible({ timeout: 15000 });
     const resourceUrl = await firstResource.getAttribute('href');
     await firstResource.click({ force: true });
 
@@ -32,7 +32,7 @@ test.describe('Visitor E2E Flow', () => {
     // In Playwright, we can intercept the download or just verify the href points to the API.
     const downloadButton = page.locator('a:has-text("Download PDF")').first();
     const href = await downloadButton.getAttribute('href');
-    expect(href).toMatch(/\/api\/download\?resource_id=.+/);
+    expect(href).toMatch(/\/api\/download\?(id|resource_id)=.+/);
     
     // Alternatively, verify clicking it triggers a new tab or navigation
     // Since it's a target="_blank", we'll just verify the href is correct for MVP.

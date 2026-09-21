@@ -15,12 +15,11 @@ export default async function SchoolPage() {
   const { data: resources } = await (supabase.from('resources') as any)
     .select(`
       id, title, slug, description, file_url, created_at, status, year,
-      standards(name, slug),
-      subjects(name, slug),
-      education_segments!inner(slug)
+      standards!inner(name, slug),
+      subjects(name, slug)
     `)
     .eq('status', 'published')
-    .eq('education_segments.slug', 'school')
+    .not('standard_id', 'is', null)
     .limit(20)
     .order('created_at', { ascending: false })
 

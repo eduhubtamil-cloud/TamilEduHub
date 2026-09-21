@@ -17,11 +17,10 @@ export default async function CompetitiveExamsPage() {
       id, title, slug, description, file_url, created_at, status, year,
       standards(name, slug),
       subjects(name, slug),
-      exam_types(name, slug),
-      education_segments!inner(slug)
+      exam_types!inner(name, slug)
     `)
     .eq('status', 'published')
-    .eq('education_segments.slug', 'competitive-exams')
+    .not('exam_type_id', 'is', null)
     .limit(20)
     .order('created_at', { ascending: false })
 
