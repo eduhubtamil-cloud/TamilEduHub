@@ -39,7 +39,7 @@ export async function Footer() {
             <h3 className="font-semibold text-white mb-6 tracking-wider text-sm">{dict.footerResources}</h3>
             <ul className="space-y-4 text-sm">
               <li><Link href="/question-papers" className="hover:text-white transition-colors">{dict.footerQuestionPapers}</Link></li>
-              <li><Link href="/search?q=collections" className="hover:text-white transition-colors">{dict.footerCollections}</Link></li>
+              <li><Link href="/collections" className="hover:text-white transition-colors">{dict.footerCollections}</Link></li>
               <li><Link href="/articles" className="hover:text-white transition-colors">{dict.footerEducationalNews}</Link></li>
               <li><Link href="/search" className="hover:text-white transition-colors">{dict.footerSearchResources}</Link></li>
             </ul>

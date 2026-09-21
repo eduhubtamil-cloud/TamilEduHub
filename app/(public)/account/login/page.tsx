@@ -9,6 +9,10 @@ import { getDictionary } from '@/lib/i18n'
 export const metadata = {
   title: 'Log In - TamilEduHub',
   description: 'Log in to your account',
+  robots: {
+    index: false,
+    follow: false,
+  }
 }
 
 // Minimal Google icon SVG
@@ -39,9 +43,10 @@ function GoogleIcon() {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string, next?: string }>
 }) {
-  const { error } = await searchParams;
+  const searchParamsData = await searchParams;
+  const error = searchParamsData.error;
   const dict = await getDictionary();
 
   return (
@@ -61,6 +66,7 @@ export default async function LoginPage({
           )}
           
           <form action={login} className="space-y-4">
+            <input type="hidden" name="next" value={searchParamsData.next || ''} />
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" name="email" type="email" placeholder="m@example.com" required />
@@ -68,7 +74,7 @@ export default async function LoginPage({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-sm font-medium text-blue-600 hover:underline">
+                <Link href="/account/forgot-password" className="text-sm font-medium text-blue-600 hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -87,6 +93,7 @@ export default async function LoginPage({
           </div>
 
           <form action={signInWithGoogle}>
+            <input type="hidden" name="next" value={searchParamsData.next || ''} />
             <Button variant="outline" type="submit" className="w-full font-medium shadow-sm h-10 border-slate-200">
               <GoogleIcon />
               {dict.continueWithGoogle}

@@ -1,6 +1,9 @@
 export const en = {
   // Navigation & Common
   home: "Home",
+  school: "Students",
+  teachers: "Teachers",
+  competitiveExams: "Competitive Exams",
   notesAndGuides: "Notes & Guides",
   pdfResources: "PDF Resources",
   popular: "Popular",

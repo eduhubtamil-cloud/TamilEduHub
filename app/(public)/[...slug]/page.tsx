@@ -53,7 +53,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
   }
 
   const path = `/${slug.join('/')}`
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'
 
   return {
     title,
@@ -119,7 +119,7 @@ export default async function TaxonomyLandingPage(props: { params: Promise<{ slu
     '@type': 'CollectionPage',
     name: standard?.name || resourceType?.name || examType?.name,
     description: `Collection of educational resources for ${standard?.name || resourceType?.name || examType?.name}.`,
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'}/${slug.join('/')}`
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'}/${slug.join('/')}`
   }
 
   return (

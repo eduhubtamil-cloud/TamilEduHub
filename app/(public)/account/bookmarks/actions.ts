@@ -37,7 +37,7 @@ export async function toggleBookmarkAction(contentId: string, contentType: 'arti
   }
 }
 
-export async function checkBookmarkStatus(contentId: string) {
+export async function checkBookmarkStatus(contentId: string, contentType: 'article' | 'resource' | 'question_paper') {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return false
@@ -47,6 +47,7 @@ export async function checkBookmarkStatus(contentId: string) {
     .select('id')
     .eq('user_id', user.id)
     .eq('content_id', contentId)
+    .eq('content_type', contentType)
     .maybeSingle()
 
   return !!existing

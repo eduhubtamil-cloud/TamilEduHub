@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Bookmark } from 'lucide-react'
 import { toggleBookmarkAction, checkBookmarkStatus } from '@/app/(public)/account/bookmarks/actions'
+import { useRouter, usePathname } from 'next/navigation'
 
 export function BookmarkButton({ 
   contentId, 
@@ -16,11 +17,14 @@ export function BookmarkButton({
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    checkBookmarkStatus(contentId).then((status) => {
+    checkBookmarkStatus(contentId, contentType).then((status) => {
       setIsBookmarked(status)
       setIsLoading(false)
     })
-  }, [contentId])
+  }, [contentId, contentType])
+
+  const router = useRouter()
+  const pathname = usePathname()
 
   const handleToggle = async () => {
     setIsLoading(true)
@@ -29,7 +33,7 @@ export function BookmarkButton({
       setIsBookmarked(result.bookmarked)
     } catch (error) {
       console.error(error)
-      alert("Please log in to bookmark this.")
+      router.push(`/account/login?next=${encodeURIComponent(pathname)}`)
     } finally {
       setIsLoading(false)
     }

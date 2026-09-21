@@ -16,13 +16,13 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com',
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app',
       },
       ...items.map((item, index) => ({
         '@type': 'ListItem',
         position: index + 2,
         name: item.label,
-        item: item.href ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'}${item.href}` : undefined,
+        item: item.href ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'}${item.href}` : undefined,
       }))
     ],
   }

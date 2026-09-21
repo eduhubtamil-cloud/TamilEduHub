@@ -2,16 +2,18 @@ import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'
   const supabase = await createClient()
 
   // Base routes
   const routes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
-    { url: `${baseUrl}/school`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/resources`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
-    { url: `${baseUrl}/question-papers`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
-    { url: `${baseUrl}/articles`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/students`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/teachers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/competitive-exams`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/resources`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/question-papers`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/articles`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
   ]
 
   // Fetch dynamic slugs
@@ -21,14 +23,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { data: articles },
     { data: standards },
     { data: subjects },
-    { data: collections }
+    { data: collections },
+    { data: examTypes }
   ] = await Promise.all([
     supabase.from('resources').select('slug, updated_at').eq('status', 'published'),
     supabase.from('question_papers').select('slug, updated_at').eq('status', 'published'),
     supabase.from('articles').select('slug, updated_at').eq('status', 'published'),
     supabase.from('standards').select('slug'),
     supabase.from('subjects').select('slug'),
-    (supabase.from('collections') as any).select('slug, updated_at')
+    (supabase.from('collections') as any).select('slug, updated_at'),
+    supabase.from('exam_types').select('slug')
   ])
 
   // Append dynamic routes
@@ -48,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       routes.push({
         url: `${baseUrl}/question-papers/${qp.slug}`,
         lastModified: new Date(qp.updated_at || new Date()),
-        changeFrequency: 'yearly', // Q-papers rarely change
+        changeFrequency: 'yearly',
         priority: 0.7,
       })
     })
@@ -68,18 +72,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (standards && subjects) {
     standards.forEach((std: any) => {
       routes.push({
-        url: `${baseUrl}/school/${std.slug}`,
+        url: `${baseUrl}/${std.slug}`,
         lastModified: new Date(),
         changeFrequency: 'weekly',
         priority: 0.8,
       })
       subjects.forEach((sub: any) => {
         routes.push({
-          url: `${baseUrl}/school/${std.slug}/${sub.slug}`,
+          url: `${baseUrl}/${std.slug}/${sub.slug}`,
           lastModified: new Date(),
           changeFrequency: 'weekly',
           priority: 0.8,
         })
+      })
+    })
+  }
+
+  if (examTypes) {
+    examTypes.forEach((exam: any) => {
+      routes.push({
+        url: `${baseUrl}/${exam.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.8,
       })
     })
   }

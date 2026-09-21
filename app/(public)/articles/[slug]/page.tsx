@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const article = data as any
   
   if (!article) return { title: 'Article Not Found' }
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'
   
   const title = `${article.title} - TamilEduHub`
   const description = article.excerpt || `Read ${article.title}`

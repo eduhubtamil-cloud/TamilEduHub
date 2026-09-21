@@ -11,9 +11,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const collection = data as any
   
   if (!collection) return { title: 'Not Found' }
+  
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'
+  
   return {
     title: `${collection.title} - TamilEduHub`,
-    description: collection.description || `Browse ${collection.title} on TamilEduHub`
+    description: collection.description || `Browse ${collection.title} on TamilEduHub`,
+    alternates: {
+      canonical: `${siteUrl}/collections/${slug}`
+    }
   }
 }
 
@@ -27,17 +33,28 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   if (!collection) notFound()
 
   // Build the dynamic query based on rules
-  let query = supabase.from('resources').select(`
-    id, title, slug, description, year,
-    standards (name, slug),
-    subjects (name, slug)
-  `)
-
-  // Apply JSON rules
   const rules = collection.query_rules || {}
   
+  let selectString = 'id, title, slug, description, year'
+  
+  if (rules.education_segment_slug) selectString += ', education_segments!inner(name, slug)'
+  else selectString += ', education_segments(name, slug)'
+
+  if (rules.standard_slug) selectString += ', standards!inner(name, slug)'
+  else selectString += ', standards(name, slug)'
+
+  if (rules.subject_slug) selectString += ', subjects!inner(name, slug)'
+  else selectString += ', subjects(name, slug)'
+  
+  if (rules.resource_type_slug) selectString += ', resource_types!inner(name, slug)'
+  if (rules.exam_type_slug) selectString += ', exam_types!inner(name, slug)'
+
+  let query = supabase.from('resources').select(selectString).eq('status', 'published')
+  
+  if (rules.education_segment_slug) {
+    query = (query as any).eq('education_segments.slug', rules.education_segment_slug)
+  }
   if (rules.resource_type_slug) {
-    // Instead of inner joining which requires exact type match, we can just use the ID if we had it, but this is a complex filter. Let's cast query.
     query = (query as any).eq('resource_types.slug', rules.resource_type_slug)
   }
   if (rules.exam_type_slug) {
@@ -52,9 +69,19 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
 
   const { data: resources } = await query.order('created_at', { ascending: false }).limit(100)
 
+  // JSON-LD Collection Page
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: collection.title,
+    description: collection.description || `Browse ${collection.title}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'}/collections/${slug}`
+  }
+
   return (
     <div className="bg-slate-50 min-h-screen py-12">
       <div className="container mx-auto px-4 max-w-5xl">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <div className="mb-10 text-center">
           <div className="inline-flex items-center justify-center h-16 w-16 bg-blue-100 text-blue-600 rounded-full mb-6">
             <BookOpen className="h-8 w-8" />

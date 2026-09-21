@@ -86,11 +86,11 @@ export function MobileNav({ dict, profile, currentLang, children }: MobileNavPro
             <div className="flex-1 overflow-y-auto py-4">
               <nav className="flex flex-col space-y-1 px-3">
                 <MobileNavLink href="/" onClick={() => setIsOpen(false)} icon={<BookOpen className="h-4 w-4" />}>{dict.home}</MobileNavLink>
-                <MobileNavLink href="/resources" onClick={() => setIsOpen(false)} icon={<Search className="h-4 w-4" />}>{dict.schoolResources}</MobileNavLink>
-                <MobileNavLink href="/textbook" onClick={() => setIsOpen(false)} icon={<BookOpen className="h-4 w-4" />}>{dict.textbooks}</MobileNavLink>
-                <MobileNavLink href="/study-guide" onClick={() => setIsOpen(false)} icon={<FileText className="h-4 w-4" />}>{dict.studyMaterials}</MobileNavLink>
-                <MobileNavLink href="/question-papers" onClick={() => setIsOpen(false)} icon={<Download className="h-4 w-4" />}>{dict.questionPapers}</MobileNavLink>
-                <MobileNavLink href="/search?q=collections" onClick={() => setIsOpen(false)} icon={<TrendingUp className="h-4 w-4" />}>{dict.collections}</MobileNavLink>
+                <MobileNavLink href="/students" onClick={() => setIsOpen(false)} icon={<BookOpen className="h-4 w-4" />}>{dict.school}</MobileNavLink>
+                <MobileNavLink href="/teachers" onClick={() => setIsOpen(false)} icon={<FileText className="h-4 w-4" />}>{dict.teachers}</MobileNavLink>
+                <MobileNavLink href="/competitive-exams" onClick={() => setIsOpen(false)} icon={<TrendingUp className="h-4 w-4" />}>{dict.competitiveExams}</MobileNavLink>
+                <MobileNavLink href="/search" onClick={() => setIsOpen(false)} icon={<Download className="h-4 w-4" />}>{dict.studyMaterials}</MobileNavLink>
+                <MobileNavLink href="/collections" onClick={() => setIsOpen(false)} icon={<Search className="h-4 w-4" />}>{dict.collections}</MobileNavLink>
               </nav>
 
               <div className="my-4 border-t border-slate-100 mx-4" />

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Edit } from 'lucide-react'
 import { BulkUploadForm } from '@/components/admin/BulkUploadForm'
+import { CsvImportModal } from '@/components/admin/CsvImportModal'
 
 export const metadata = {
   title: 'Bulk Upload Resources - TamilEduHub CMS',
@@ -22,12 +23,15 @@ export default function BulkUploadPage() {
             <p className="text-slate-500">Quickly upload multiple files. They will be saved as Drafts.</p>
           </div>
         </div>
-        <Button asChild variant="secondary">
-          <Link href="/admin/resources/bulk-edit">
-            <Edit className="h-4 w-4 mr-2" />
-            Go to Bulk Edit
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <CsvImportModal />
+          <Button asChild variant="secondary">
+            <Link href="/admin/resources/bulk-edit">
+              <Edit className="h-4 w-4 mr-2" />
+              Go to Bulk Edit
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <BulkUploadForm />

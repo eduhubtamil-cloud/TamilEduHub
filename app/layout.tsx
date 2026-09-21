@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const notoSansTamil = Noto_Sans_Tamil({ subsets: ['tamil'], variable: '--font-noto-tamil', weight: ['400', '500', '600', '700'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'),
   title: {
     template: '%s | TamilEduHub',
     default: 'TamilEduHub - Educational Resources',

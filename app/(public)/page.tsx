@@ -139,24 +139,48 @@ export default async function HomePage() {
 
       {/* 2. QUICK ACCESS CARDS */}
       <section className="container mx-auto px-4 max-w-7xl -mt-10 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-          {[
-            { title: dict.textbooks, href: '/textbooks', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50' },
-            { title: dict.studyMaterials, href: '/study-guides', icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-            { title: dict.questionPapers, href: '/question-papers', icon: FileQuestion, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-            { title: dict.notesAndGuides || 'Notes & Guides', href: '/search?q=notes', icon: BookMarked, color: 'text-amber-600', bg: 'bg-amber-50' },
-            { title: dict.pdfResources || 'PDF Resources', href: '/resources', icon: Download, color: 'text-rose-600', bg: 'bg-rose-50' },
-            { title: dict.popular, href: '/search?sort=popular', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' }
-          ].map((item) => (
-            <Link href={item.href} key={item.title}>
-              <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-lg hover:border-blue-200 transition-all h-full flex flex-col items-center justify-center text-center group">
-                <div className={`${item.bg} ${item.color} p-3 rounded-xl mb-3 group-hover:scale-110 transition-transform`}>
-                  <item.icon className="h-6 w-6" />
-                </div>
-                <span className="font-semibold text-slate-800 text-sm md:text-base group-hover:text-blue-700 transition-colors">{item.title}</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Link href="/students">
+            <div className="bg-white rounded-2xl p-8 shadow-xl border border-slate-100 hover:shadow-2xl hover:border-blue-300 transition-all h-full flex flex-col group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-10 -mt-10 opacity-50 group-hover:scale-150 transition-transform duration-500" />
+              <div className="bg-blue-100 text-blue-600 p-4 rounded-2xl mb-6 w-fit group-hover:bg-blue-600 group-hover:text-white transition-colors relative z-10">
+                <BookOpen className="h-8 w-8" />
               </div>
-            </Link>
-          ))}
+              <h3 className="text-2xl font-bold text-slate-900 mb-2 relative z-10">Students</h3>
+              <p className="text-slate-500 font-medium relative z-10 flex-1">Classes 1–12 Textbooks, notes, guides, question papers and more.</p>
+              <div className="mt-6 flex items-center text-blue-600 font-semibold relative z-10 group-hover:translate-x-2 transition-transform">
+                Explore Students <ArrowRight className="h-5 w-5 ml-2" />
+              </div>
+            </div>
+          </Link>
+
+          <Link href="/teachers">
+            <div className="bg-white rounded-2xl p-8 shadow-xl border border-slate-100 hover:shadow-2xl hover:border-indigo-300 transition-all h-full flex flex-col group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-10 -mt-10 opacity-50 group-hover:scale-150 transition-transform duration-500" />
+              <div className="bg-indigo-100 text-indigo-600 p-4 rounded-2xl mb-6 w-fit group-hover:bg-indigo-600 group-hover:text-white transition-colors relative z-10">
+                <GraduationCap className="h-8 w-8" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2 relative z-10">Teachers & Educators</h3>
+              <p className="text-slate-500 font-medium relative z-10 flex-1">Lesson plans, worksheets, teaching materials and question banks.</p>
+              <div className="mt-6 flex items-center text-indigo-600 font-semibold relative z-10 group-hover:translate-x-2 transition-transform">
+                Explore Teachers <ArrowRight className="h-5 w-5 ml-2" />
+              </div>
+            </div>
+          </Link>
+
+          <Link href="/competitive-exams">
+            <div className="bg-white rounded-2xl p-8 shadow-xl border border-slate-100 hover:shadow-2xl hover:border-emerald-300 transition-all h-full flex flex-col group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-10 -mt-10 opacity-50 group-hover:scale-150 transition-transform duration-500" />
+              <div className="bg-emerald-100 text-emerald-600 p-4 rounded-2xl mb-6 w-fit group-hover:bg-emerald-600 group-hover:text-white transition-colors relative z-10">
+                <TrendingUp className="h-8 w-8" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2 relative z-10">Competitive Exams</h3>
+              <p className="text-slate-500 font-medium relative z-10 flex-1">Previous papers, study materials, syllabus and preparation resources.</p>
+              <div className="mt-6 flex items-center text-emerald-600 font-semibold relative z-10 group-hover:translate-x-2 transition-transform">
+                Explore Exams <ArrowRight className="h-5 w-5 ml-2" />
+              </div>
+            </div>
+          </Link>
         </div>
       </section>
 
@@ -203,7 +227,7 @@ export default async function HomePage() {
                 <h2 className="text-3xl font-bold text-slate-900 mb-2">{dict.featuredCollections || 'Featured Collections'}</h2>
                 <p className="text-slate-500">பல்வேறு வளங்களை ஒன்றிணைத்த சிறப்பு தொகுப்புகள்.</p>
               </div>
-              <Link href="/search?q=collections" className="hidden md:flex items-center text-blue-600 font-medium hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-full">
+              <Link href="/collections" className="hidden md:flex items-center text-blue-600 font-medium hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-full">
                 அனைத்தும் <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
             </div>

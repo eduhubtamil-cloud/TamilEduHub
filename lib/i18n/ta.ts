@@ -1,6 +1,9 @@
 export const ta = {
   // Navigation & Common
   home: "முகப்பு",
+  school: "மாணவர்கள்",
+  teachers: "ஆசிரியர்கள்",
+  competitiveExams: "போட்டித் தேர்வுகள்",
   notesAndGuides: "குறிப்புகள்",
   pdfResources: "PDF வளங்கள்",
   popular: "பிரபலமானவை",

@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const resource = data as any
   
   if (!resource) return { title: 'Resource Not Found' }
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'
   
   const title = resource.seo_title || `${resource.title} - TamilEduHub`
   const description = resource.seo_description || resource.description || `Download ${resource.title}`
@@ -97,7 +97,7 @@ export default async function ResourcePage({
   // JSON-LD for Educational Resource
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'EducationalResource',
+    '@type': 'LearningResource',
     name: resource.title,
     description: resource.description,
     educationalAlignment: {

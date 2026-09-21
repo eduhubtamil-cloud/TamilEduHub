@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const paper = data as any
   
   if (!paper) return { title: 'Question Paper Not Found' }
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamileduhub.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tamil-edu-hub.vercel.app'
   
   const title = `${paper.title} - TamilEduHub`
   const description = paper.description || `Download ${paper.title}`
@@ -79,8 +79,25 @@ export default async function QuestionPaperDetailsPage({
 
   const relatedPapers = relatedData || []
 
+  // JSON-LD for Question Paper
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LearningResource',
+    name: paper.title,
+    description: paper.description || `Question paper for ${paper.standards?.name || ''} ${paper.subjects?.name || ''}`,
+    educationalAlignment: {
+      '@type': 'AlignmentObject',
+      alignmentType: 'educationalLevel',
+      educationalFramework: 'Tamil Nadu State Board',
+      targetName: paper.standards?.name
+    },
+    educationalUse: 'Exam Preparation',
+    isAccessibleForFree: true
+  }
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <ViewTracker id={paper.id} type="question_papers" />
       <div className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">

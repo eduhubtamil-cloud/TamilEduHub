@@ -9,6 +9,10 @@ import { getDictionary } from '@/lib/i18n'
 export const metadata = {
   title: 'Sign Up - TamilEduHub',
   description: 'Create a new account',
+  robots: {
+    index: false,
+    follow: false,
+  }
 }
 
 function GoogleIcon() {
@@ -38,9 +42,10 @@ function GoogleIcon() {
 export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string, next?: string }>
 }) {
-  const { error } = await searchParams;
+  const searchParamsData = await searchParams;
+  const error = searchParamsData.error;
   const dict = await getDictionary();
 
   return (
@@ -60,6 +65,7 @@ export default async function RegisterPage({
           )}
           
           <form action={signup} className="space-y-4">
+            <input type="hidden" name="next" value={searchParamsData.next || ''} />
             <div className="space-y-2">
               <Label htmlFor="fullName">Full Name</Label>
               <Input id="fullName" name="fullName" type="text" placeholder="John Doe" required />
@@ -85,6 +91,7 @@ export default async function RegisterPage({
           </div>
 
           <form action={signInWithGoogle}>
+            <input type="hidden" name="next" value={searchParamsData.next || ''} />
             <Button variant="outline" type="submit" className="w-full font-medium shadow-sm h-10 border-slate-200">
               <GoogleIcon />
               {dict.continueWithGoogle}

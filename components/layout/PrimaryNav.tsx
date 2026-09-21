@@ -12,11 +12,11 @@ export function PrimaryNav({ dict }: PrimaryNavProps) {
   
   const navItems = [
     { href: '/', label: dict.home },
-    { href: '/resources', label: dict.schoolResources },
-    { href: '/textbook', label: dict.textbooks },
-    { href: '/study-guide', label: dict.studyMaterials },
-    { href: '/question-papers', label: dict.questionPapers },
-    { href: '/search?q=collections', label: dict.collections, pattern: '/collections' }, 
+    { href: '/students', label: dict.school },
+    { href: '/teachers', label: dict.teachers },
+    { href: '/competitive-exams', label: dict.competitiveExams },
+    { href: '/search', label: dict.studyMaterials, pattern: '/search' },
+    { href: '/collections', label: dict.collections, pattern: '/collections' }, 
   ]
 
   const isActive = (item: typeof navItems[0]) => {

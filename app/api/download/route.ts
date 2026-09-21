@@ -23,9 +23,11 @@ export async function GET(request: Request) {
     fileUrl = resource.file_url
 
     // Increment counter & log
+    const adminClient = await import('@/lib/supabase/admin').then(m => m.createAdminClient())
+    
     await Promise.all([
-      (supabase.from('resources') as any).update({ downloads: (resource.downloads || 0) + 1 }).eq('id', resourceId),
-      (supabase.from('downloads') as any).insert({ resource_id: resourceId, user_id: user?.id || null })
+      (adminClient.from('resources') as any).update({ downloads: (resource.downloads || 0) + 1 }).eq('id', resourceId),
+      (adminClient.from('downloads') as any).insert({ resource_id: resourceId, user_id: user?.id || null })
     ])
   } else if (qpId) {
     const { data } = await supabase.from('question_papers').select('pdf_url').eq('id', qpId).single()
@@ -34,7 +36,8 @@ export async function GET(request: Request) {
     fileUrl = qp.pdf_url
 
     // Log download
-    await (supabase.from('downloads') as any).insert({ question_paper_id: qpId, user_id: user?.id || null })
+    const adminClient = await import('@/lib/supabase/admin').then(m => m.createAdminClient())
+    await (adminClient.from('downloads') as any).insert({ question_paper_id: qpId, user_id: user?.id || null })
   }
 
   // Redirect user to the actual file

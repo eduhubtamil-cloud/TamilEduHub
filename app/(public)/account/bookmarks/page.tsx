@@ -8,6 +8,10 @@ import { getDictionary } from '@/lib/i18n'
 
 export const metadata = {
   title: 'My Bookmarks - TamilEduHub',
+  robots: {
+    index: false,
+    follow: false,
+  }
 }
 
 export default async function BookmarksPage() {

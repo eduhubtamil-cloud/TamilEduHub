@@ -10,6 +10,11 @@ export function ResourceCard({ resource, dict }: { resource: any, dict?: Record<
     <Card className="hover:shadow-lg transition-shadow group h-full flex flex-col border-slate-200 hover:border-blue-300 overflow-hidden">
       <CardHeader className="pb-3 bg-slate-50/50">
         <div className="flex flex-wrap items-center gap-2 mb-2">
+          {resource.exam_types?.name && (
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50`}>
+              {resource.exam_types.name}
+            </span>
+          )}
           {resource.standards?.name && (
             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${badgeColor}`}>
               {resource.standards.name}

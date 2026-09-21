@@ -11,6 +11,10 @@ import { getDictionary } from '@/lib/i18n'
 
 export const metadata = {
   title: 'My Profile - TamilEduHub',
+  robots: {
+    index: false,
+    follow: false,
+  }
 }
 
 export default async function ProfilePage() {

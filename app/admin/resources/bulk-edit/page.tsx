@@ -16,19 +16,33 @@ export default async function BulkEditPage(props: {
   const supabase = await createClient()
 
   // Fetch taxonomies
-  const [{ data: standards }, { data: subjects }, { data: mediums }, { data: resourceTypes }] = await Promise.all([
+  const [
+    { data: standards }, 
+    { data: subjects }, 
+    { data: mediums }, 
+    { data: resourceTypes }, 
+    { data: segmentsData },
+    { data: examTypes },
+    { data: publications }
+  ] = await Promise.all([
     supabase.from('standards').select('id, name').order('display_order'),
     supabase.from('subjects').select('id, name').order('display_order'),
     supabase.from('mediums').select('id, name'),
-    supabase.from('resource_types').select('id, name')
+    supabase.from('resource_types').select('id, name'),
+    (supabase.from('education_segments') as any).select('id, name').order('display_order'),
+    (supabase.from('exam_types') as any).select('id, name').order('display_order'),
+    (supabase.from('publications') as any).select('id, name').order('name')
   ])
+
+  const segments = segmentsData || []
 
   // Fetch resources
   let query = (supabase.from('resources') as any).select(`
     id, title, status,
     standards(name),
-    subjects(name)
-  `).order('created_at', { ascending: false })
+    subjects(name),
+    exam_types(name)
+  `).neq('status', 'deleted').order('created_at', { ascending: false })
 
   if (statusFilter !== 'all') {
     query = query.eq('status', statusFilter)
@@ -37,7 +51,7 @@ export default async function BulkEditPage(props: {
   const { data: resources } = await query.limit(200)
 
   return (
-    <div className="p-8 max-w-6xl mx-auto space-y-6">
+    <div className="p-8 max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
@@ -71,6 +85,9 @@ export default async function BulkEditPage(props: {
         subjects={subjects || []}
         mediums={mediums || []}
         resourceTypes={resourceTypes || []}
+        segments={segments}
+        examTypes={examTypes || []}
+        publications={publications || []}
       />
     </div>
   )
