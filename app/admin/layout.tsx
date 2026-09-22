@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, FileText, FolderOpen, Users, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, FileText, FolderOpen, Users, Settings, LogOut, FileQuestion } from 'lucide-react'
 import { signout } from '@/app/auth/actions'
 
 export const metadata = {
@@ -37,6 +37,9 @@ export default async function AdminLayout({
           </Link>
           <Link href="/admin/articles" className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 hover:text-white">
             <FileText className="mr-3 flex-shrink-0 h-5 w-5" /> Articles
+          </Link>
+          <Link href="/admin/question-papers" className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 hover:text-white">
+            <FileQuestion className="mr-3 flex-shrink-0 h-5 w-5" /> Question Papers
           </Link>
           <Link href="/admin/resources" className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 hover:text-white">
             <FolderOpen className="mr-3 flex-shrink-0 h-5 w-5" /> Resources
