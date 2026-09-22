@@ -30,7 +30,7 @@ export default async function HomePage() {
     supabase.from('standards').select('name, slug, display_order').order('display_order'),
     (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').ilike('title', '%guide%').order('created_at', { ascending: false }).limit(4),
     (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').ilike('title', '%textbook%').order('created_at', { ascending: false }).limit(4),
-    supabase.from('question_papers').select('id, title, slug, description, file_size:pdf_size, views_count, year, standards(name), subjects(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(4),
+    supabase.from('question_papers').select('id, title, slug, description, views_count, year, standards(name), subjects(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(4),
     (supabase.from('collections') as any).select('id, title, slug, description').order('created_at', { ascending: false }).limit(3),
     (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').order('created_at', { ascending: false }).limit(4),
     (supabase.from('resources') as any).select('id, title, slug, description, file_size, views_count, year, standards(name), subjects(name), resource_types(slug, name)').eq('status', 'published').order('views_count', { ascending: false }).limit(4)
