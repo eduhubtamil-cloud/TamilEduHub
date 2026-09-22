@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 // To run this test properly, an admin user must exist in the database.
 // For example: admin@tamileduhub.com / password123 with role 'admin' in the roles table.
 const adminEmail = process.env.ADMIN_EMAIL || 'admin@tamileduhub.com';
-const adminPassword = process.env.ADMIN_PASSWORD || 'password123';
+const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@TamilEdu2026!';
 
 test.describe('Admin E2E Flow', () => {
   // Skip this test by default unless explicitly running in an environment with the admin seeded.

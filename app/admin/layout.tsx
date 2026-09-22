@@ -38,7 +38,7 @@ export default async function AdminLayout({
           <Link href="/admin/articles" className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 hover:text-white">
             <FileText className="mr-3 flex-shrink-0 h-5 w-5" /> Articles
           </Link>
-          <Link href="/admin/resources" className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-slate-800 text-white">
+          <Link href="/admin/resources" className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 hover:text-white">
             <FolderOpen className="mr-3 flex-shrink-0 h-5 w-5" /> Resources
           </Link>
           <Link href="/admin/users" className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-800 hover:text-white">

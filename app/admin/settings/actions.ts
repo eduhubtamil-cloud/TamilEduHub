@@ -162,11 +162,36 @@ export async function deleteExamType(formData: FormData) {
 
 export async function createPublication(formData: FormData) {
   const supabase = await createClient()
-  const name = formData.get('name') as string
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+  const name = (formData.get('name') as string)?.trim()
+  const slug = (formData.get('slug') as string)?.trim() || generateSlug(name)
+  const display_order = parseInt((formData.get('display_order') as string) || '0', 10)
 
-  const { error } = await (supabase.from('publications') as any).insert([{ name, slug }])
-  if (error) throw new Error(error.message)
+  if (!name) throw new Error('Name is required')
+
+  const { error } = await (supabase.from('publications') as any).insert([{ name, slug, display_order }])
+  if (error) {
+    console.error('Failed to create publication:', error)
+    throw new Error(error.message)
+  }
+  revalidatePath('/admin/settings/publications')
+}
+
+export async function updatePublication(formData: FormData) {
+  const supabase = await createClient()
+  const id = formData.get('id') as string
+  const name = (formData.get('name') as string)?.trim()
+  const slug = (formData.get('slug') as string)?.trim() || generateSlug(name)
+  const display_order = parseInt((formData.get('display_order') as string) || '0', 10)
+
+  if (!id || !name) throw new Error('ID and Name are required')
+
+  const { error } = await (supabase.from('publications') as any)
+    .update({ name, slug, display_order })
+    .eq('id', id)
+  if (error) {
+    console.error('Failed to update publication:', error)
+    throw new Error(error.message)
+  }
   revalidatePath('/admin/settings/publications')
 }
 
@@ -174,7 +199,10 @@ export async function deletePublication(formData: FormData) {
   const supabase = await createClient()
   const id = formData.get('id') as string
   const { error } = await (supabase.from('publications') as any).delete().eq('id', id)
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('Failed to delete publication:', error)
+    throw new Error(error.message)
+  }
   revalidatePath('/admin/settings/publications')
 }
 

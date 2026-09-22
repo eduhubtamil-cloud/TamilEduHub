@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { createPublication, deletePublication } from '../actions'
+import { createPublication, updatePublication, deletePublication } from '../actions'
 
-export const metadata = { title: 'Manage publications - Admin' }
+export const metadata = { title: 'Manage Publications - Admin' }
 
-export default async function publicationsSettingsPage() {
+export default async function PublicationsSettingsPage() {
   const supabase = await createClient()
   const { data } = await supabase.from('publications').select('*').order('display_order', { ascending: true })
   const publications = (data || []) as any[]
@@ -15,24 +15,24 @@ export default async function publicationsSettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-slate-900">Educational publications</h2>
-        <p className="text-slate-500 text-sm">Manage teaching publications like Tamil publication or English publication.</p>
+        <h2 className="text-xl font-semibold text-slate-900">Educational Publications</h2>
+        <p className="text-slate-500 text-sm">Manage book and guide publishers like Sura Publications, Konar Publications, Loyola, etc.</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Add New publication</CardTitle>
-          <CardDescription>Create a new publication.</CardDescription>
+          <CardTitle className="text-lg">Add New Publication</CardTitle>
+          <CardDescription>Create a new publication or publisher.</CardDescription>
         </CardHeader>
         <CardContent>
           <form action={createPublication as any} className="flex items-end gap-4">
             <div className="space-y-2 flex-1">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" name="name" placeholder="e.g. Tamil publication" required />
+              <Input id="name" name="name" placeholder="e.g. Sura Publications" required />
             </div>
             <div className="space-y-2 flex-1">
               <Label htmlFor="slug">Slug (URL friendly)</Label>
-              <Input id="slug" name="slug" placeholder="e.g. tamil-publication" required />
+              <Input id="slug" name="slug" placeholder="e.g. sura-publications" required />
             </div>
             <div className="space-y-2 w-24">
               <Label htmlFor="display_order">Order</Label>
@@ -47,7 +47,7 @@ export default async function publicationsSettingsPage() {
         {publications.map((publication: any) => (
           <Card key={publication.id}>
             <CardContent className="p-4">
-              <form action={createPublication as any} className="flex items-end gap-4">
+              <form action={updatePublication as any} className="flex items-end gap-4">
                 <input type="hidden" name="id" value={publication.id} />
                 <div className="space-y-2 flex-1">
                   <Label>Name</Label>
