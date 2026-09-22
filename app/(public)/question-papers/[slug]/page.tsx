@@ -133,9 +133,9 @@ export default async function QuestionPaperDetailsPage({
             </CardContent>
           </Card>
 
-          {paper.file_url && (
+          {paper.pdf_url && (
             <div className="mt-8">
-              <PdfViewer url={paper.file_url} title={paper.title} />
+              <PdfViewer url={paper.pdf_url} title={paper.title} />
             </div>
           )}
 

@@ -165,12 +165,7 @@ export default async function ResourcePage({
             )}
 
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[700px]">
-              <div className="bg-slate-100 px-4 py-3 border-b border-slate-200 flex justify-between items-center shrink-0">
-                <div className="flex items-center gap-2 text-slate-700 font-medium text-sm">
-                  <FileText className="h-4 w-4" /> PDF Document Preview
-                </div>
-              </div>
-              <div className="flex-1 overflow-hidden relative bg-slate-200/50">
+              <div className="flex-1 overflow-hidden relative">
                 {resource.file_url ? (
                   <PdfViewer url={resource.file_url} title={resource.title} />
                 ) : (
