@@ -152,7 +152,7 @@ export default async function ArticleDetailsPage({
         <article className="prose prose-slate prose-lg md:prose-xl max-w-none mb-12">
           {/* For MVP, we use dangerouslySetInnerHTML to render basic HTML or just preserve line breaks */}
           <div 
-            className="whitespace-pre-wrap"
+            className="prose-content overflow-x-auto"
             dangerouslySetInnerHTML={{ __html: article.content }} 
           />
         </article>

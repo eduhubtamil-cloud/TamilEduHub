@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "ingest:tamilaruvi": "node scripts/ingest-tamilaruvi.js"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.3.3",
