@@ -9,7 +9,7 @@ import { PdfViewer } from '@/components/ui/PdfViewer'
 import { ViewTracker } from '@/components/ui/ViewTracker'
 import { CommentsSection } from '@/components/ui/CommentsSection'
 import { Card, CardContent } from '@/components/ui/card'
-import { Download, FileText, Calendar, LayoutTemplate, BookOpen } from 'lucide-react'
+import { Download, FileText, Calendar, LayoutTemplate, BookOpen, ExternalLink } from 'lucide-react'
 import { AdSlot } from '@/components/ui/AdSlot'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { ResourceCard } from '@/components/ui/ResourceCard'
@@ -221,6 +221,21 @@ export default async function ResourcePage({
                     <span className="text-slate-500 font-medium">Total Views</span>
                     <span className="font-bold text-slate-900 text-right">{resource.views_count || 0}</span>
                   </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 space-y-2.5">
+                  <Button size="lg" className="w-full h-12 gap-2 bg-blue-600 hover:bg-blue-700 font-semibold text-white shadow-sm" asChild>
+                    <a href={`/api/download?resource_id=${resource.id}`} target="_blank" rel="noopener noreferrer">
+                      <Download className="h-5 w-5" /> {dict.downloadPdf || 'Download PDF'}
+                    </a>
+                  </Button>
+                  {resource.file_url && (
+                    <Button variant="outline" size="sm" className="w-full h-10 gap-2 text-slate-700 hover:text-blue-600 font-medium" asChild>
+                      <a href={resource.file_url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4 text-slate-500" /> Open in Google Drive
+                      </a>
+                    </Button>
+                  )}
                 </div>
 
                 <div className="pt-2">

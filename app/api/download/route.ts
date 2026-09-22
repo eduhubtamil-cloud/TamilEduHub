@@ -27,8 +27,7 @@ export async function GET(request: Request) {
 
   try {
     if (resourceId) {
-      const { data: resource, error } = await supabase
-        .from('resources')
+      const { data: resource, error } = await (supabase.from('resources') as any)
         .select('file_url')
         .eq('id', resourceId)
         .single()
@@ -40,13 +39,12 @@ export async function GET(request: Request) {
 
       // Non-blocking download count update
       try {
-        await supabase.rpc('increment_download_count', { table_name: 'resources', record_id: resourceId })
+        await (supabase.rpc as any)('increment_download_count', { table_name: 'resources', record_id: resourceId })
       } catch {
         // Continue even if RPC fails
       }
     } else if (qpId) {
-      const { data: qp, error } = await supabase
-        .from('question_papers')
+      const { data: qp, error } = await (supabase.from('question_papers') as any)
         .select('pdf_url')
         .eq('id', qpId)
         .single()
@@ -58,7 +56,7 @@ export async function GET(request: Request) {
 
       // Non-blocking download count update
       try {
-        await supabase.rpc('increment_download_count', { table_name: 'question_papers', record_id: qpId })
+        await (supabase.rpc as any)('increment_download_count', { table_name: 'question_papers', record_id: qpId })
       } catch {
         // Continue even if RPC fails
       }

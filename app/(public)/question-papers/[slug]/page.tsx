@@ -7,7 +7,7 @@ import { SocialShareButtons } from '@/components/ui/SocialShareButtons'
 import { PdfViewer } from '@/components/ui/PdfViewer'
 import { ViewTracker } from '@/components/ui/ViewTracker'
 import { CommentsSection } from '@/components/ui/CommentsSection'
-import { Download, FileText, Calendar, BookOpen, CheckCircle } from 'lucide-react'
+import { Download, FileText, Calendar, BookOpen, CheckCircle, ExternalLink } from 'lucide-react'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -174,12 +174,19 @@ export default async function QuestionPaperDetailsPage({
 
           <div className="space-y-3">
             {paper.pdf_url ? (
-              <Button size="lg" className="w-full gap-2 text-base h-14" asChild>
-                <a href={`/api/download?qp_id=${paper.id}`} target="_blank" rel="noopener noreferrer">
-                  <Download className="h-5 w-5" />
-                  Download Question Paper
-                </a>
-              </Button>
+              <>
+                <Button size="lg" className="w-full gap-2 text-base h-14 bg-blue-600 hover:bg-blue-700 font-semibold shadow-sm" asChild>
+                  <a href={`/api/download?qp_id=${paper.id}`} target="_blank" rel="noopener noreferrer">
+                    <Download className="h-5 w-5" />
+                    Download Question Paper
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" className="w-full gap-2 text-slate-700 hover:text-blue-600 font-medium h-10" asChild>
+                  <a href={paper.pdf_url} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-4 w-4 text-slate-500" /> Open in Google Drive
+                  </a>
+                </Button>
+              </>
             ) : (
               <Button size="lg" className="w-full gap-2 text-base h-14" disabled>
                 File Not Available
